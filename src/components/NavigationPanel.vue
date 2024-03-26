@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable tag="a" target="_blank" :href="props.link">
+  <!-- <q-item clickable tag="a" target="_blank" :href="props.link">
     <q-item-section v-if="props.icon" avatar>
       <q-icon :name="props.icon" />
     </q-item-section>
@@ -8,7 +8,10 @@
       <q-item-label>{{ props.title }}</q-item-label>
       <q-item-label caption>{{ props.caption }}</q-item-label>
     </q-item-section>
-  </q-item>
+  </q-item> -->
+  <div>
+    <!-- <router-link :to="{ name: 'Todo' }">To do</router-link> -->
+  </div>
 </template>
 
 <script setup>
@@ -16,25 +19,25 @@ defineOptions({
   name: "NavigationPanel",
 });
 
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
+// const props = defineProps({
+//   title: {
+//     type: String,
+//     required: true,
+//   },
 
-  caption: {
-    type: String,
-    default: "",
-  },
+//   caption: {
+//     type: String,
+//     default: "",
+//   },
 
-  link: {
-    type: String,
-    default: "#",
-  },
+//   link: {
+//     type: String,
+//     default: "#",
+//   },
 
-  icon: {
-    type: String,
-    default: "",
-  },
-});
+//   icon: {
+//     type: String,
+//     default: "",
+//   },
+// });
 </script>
