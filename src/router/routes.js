@@ -1,6 +1,7 @@
 import IndexPage from "pages/IndexPage.vue";
 import MainLayout from "layouts/MainLayout.vue";
 import TodoPage from "src/pages/TodoPage.vue";
+
 const routes = [
   {
     path: "/",
@@ -16,9 +17,6 @@ const routes = [
       },
     ],
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),
