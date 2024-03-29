@@ -8,6 +8,15 @@
         </p>
       </div>
     </div>
+
+    <div class="todos-list">
+      <p>Your favorites are</p>
+      <div v-for="todo in todoStore.favorites" :key="todo.id">
+        <p>
+          <TodoCard :todo="todo" />
+        </p>
+      </div>
+    </div>
   </q-page>
 </template>
 

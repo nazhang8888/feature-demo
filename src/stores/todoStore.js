@@ -10,8 +10,8 @@ export const useTodoStore = defineStore("todoStore", {
   }),
 
   getters: {
-    doubleCount(state) {
-      return state.counter * 2;
+    favorites() {
+      return this.todos.filter((t) => t.isFavorite);
     },
   },
 
