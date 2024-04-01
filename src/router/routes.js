@@ -4,19 +4,18 @@ import TodoPage from "src/pages/TodoPage.vue";
 
 const routes = [
   {
+    name: "home",
     path: "/",
-    component: MainLayout,
-    children: [
-      {
-        path: "",
-        component: IndexPage,
-      },
-      {
-        path: "todo",
-        component: TodoPage,
-      },
-    ],
+    component: IndexPage,
+    meta: { layout: MainLayout },
   },
+  {
+    name: "todos",
+    path: "/todo",
+    component: TodoPage,
+    meta: { layout: MainLayout },
+  },
+
   {
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),

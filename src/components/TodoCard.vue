@@ -1,10 +1,18 @@
 <template>
   <div class="todo">
-    <p>{{ todo.title }}</p>
-    <div class="icons">
-      <i class="material-icons">delete</i>
-      <i class="material-icons">favorite</i>
-    </div>
+    <q-list>
+      <q-item>
+        <q-item-label>{{ todo.title }}</q-item-label>
+        <q-item-section avatar>
+          <q-icon name="favorite" />
+        </q-item-section>
+        <q-item-section> Favorite </q-item-section>
+        <q-item-section avatar>
+          <q-icon name="done" />
+        </q-item-section>
+        <q-item-section> Done </q-item-section>
+      </q-item>
+    </q-list>
   </div>
 </template>
 

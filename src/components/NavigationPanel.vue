@@ -1,21 +1,28 @@
 <template>
-  <!-- <q-item clickable tag="a" target="_blank" :href="props.link">
-    <q-item-section v-if="props.icon" avatar>
-      <q-icon :name="props.icon" />
-    </q-item-section>
-
-    <q-item-section>
-      <q-item-label>{{ props.title }}</q-item-label>
-      <q-item-label caption>{{ props.caption }}</q-item-label>
-    </q-item-section>
-  </q-item> -->
   <div>
-    <q-item> </q-item>
+    <q-item>
+      <q-item-section avatar>
+        <q-icon name="home" />
+      </q-item-section>
+      <q-item-section>
+        <router-link
+          v-for="route in router.options.routes"
+          :key="route.path"
+          :to="route.path"
+        >
+          {{ route.name }}
+        </router-link>
+      </q-item-section>
+    </q-item>
   </div>
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
+
 defineOptions({
   name: "NavigationPanel",
 });
+
+const router = useRouter();
 </script>
