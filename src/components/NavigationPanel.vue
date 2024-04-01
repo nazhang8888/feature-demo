@@ -10,7 +10,7 @@
     </q-item-section>
   </q-item> -->
   <div>
-    <!-- <router-link :to="{ name: 'Todo' }">To do</router-link> -->
+    <q-item> </q-item>
   </div>
 </template>
 
@@ -18,26 +18,4 @@
 defineOptions({
   name: "NavigationPanel",
 });
-
-// const props = defineProps({
-//   title: {
-//     type: String,
-//     required: true,
-//   },
-
-//   caption: {
-//     type: String,
-//     default: "",
-//   },
-
-//   link: {
-//     type: String,
-//     default: "#",
-//   },
-
-//   icon: {
-//     type: String,
-//     default: "",
-//   },
-// });
 </script>
