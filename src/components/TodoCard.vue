@@ -1,16 +1,16 @@
 <template>
-  <div class="todo">
-    <q-list>
-      <q-item>
+  <div class="q-pa-md" style="max-width: 350px">
+    <q-list bordered>
+      <q-item clickable v-ripple>
         <q-item-label>{{ todo.title }}</q-item-label>
         <q-item-section avatar>
-          <q-icon name="favorite" />
+          <q-icon color="primary" name="favorite" />
+          Favorite
         </q-item-section>
-        <q-item-section> Favorite </q-item-section>
         <q-item-section avatar>
-          <q-icon name="done" />
+          <q-icon color="primary" name="done" />
+          Done
         </q-item-section>
-        <q-item-section> Done </q-item-section>
       </q-item>
     </q-list>
   </div>

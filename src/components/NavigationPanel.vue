@@ -7,12 +7,14 @@
           :key="route.path"
           :to="route.path"
           style="text-decoration: none"
+          exact-active-class="exact-active"
+          active-class="active"
         >
           <q-item-section>
             <q-icon
               :name="route.meta.icon"
               size="xl"
-              color="secondary"
+              :color="primary"
               class="q-pb-md justify-center"
             />
           </q-item-section>
