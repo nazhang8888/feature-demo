@@ -2,10 +2,14 @@
   <div>
     <q-item>
       <q-item-section>
-        <router-link v-for="route in routes" :key="route.path" :to="route.path">
+        <router-link
+          v-for="route in routes"
+          :key="route.path"
+          :to="route.path"
+          style="text-decoration: none"
+        >
           <q-item-section>
-            <q-icon :name="route.meta.icon" />
-            {{ route.name }}
+            <q-icon :name="route.meta.icon" size="xl" color="secondary" />
           </q-item-section>
         </router-link>
       </q-item-section>
