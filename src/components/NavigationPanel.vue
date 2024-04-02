@@ -3,8 +3,10 @@
     <q-item>
       <q-item-section>
         <router-link v-for="route in routes" :key="route.path" :to="route.path">
-          <q-item-section avatar> </q-item-section>
-          {{ route.name }}
+          <q-item-section>
+            <q-icon :name="route.meta.icon" />
+            {{ route.name }}
+          </q-item-section>
         </router-link>
       </q-item-section>
     </q-item>

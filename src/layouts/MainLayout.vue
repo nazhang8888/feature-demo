@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import NavigationPanel from "components/NavigationPanel.vue";
 import { useQuasar } from "quasar";
 
