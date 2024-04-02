@@ -2,11 +2,7 @@
   <div>
     <q-item>
       <q-item-section>
-        <router-link
-          v-for="route in router.options.routes"
-          :key="route.path"
-          :to="route.path"
-        >
+        <router-link v-for="route in routes" :key="route.path" :to="route.path">
           <q-item-section avatar> </q-item-section>
           {{ route.name }}
         </router-link>
@@ -23,4 +19,5 @@ defineOptions({
 });
 
 const router = useRouter();
+const routes = router.options.routes;
 </script>
