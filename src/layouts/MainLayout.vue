@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh Lpr lFf">
+    <q-header elevated class="z-top">
       <q-toolbar>
         <q-btn
           flat
@@ -20,7 +20,14 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      :width="100"
+      show-if-above
+      bordered
+      overlay
+      behavior="desktop"
+    >
       <q-list>
         <NavigationPanel />
       </q-list>

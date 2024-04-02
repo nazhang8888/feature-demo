@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <q-item>
+  <div class="q-pa-md">
+    <q-item class="q-pl-sm">
       <q-item-section>
         <router-link
           v-for="route in routes"
@@ -9,7 +9,12 @@
           style="text-decoration: none"
         >
           <q-item-section>
-            <q-icon :name="route.meta.icon" size="xl" color="secondary" />
+            <q-icon
+              :name="route.meta.icon"
+              size="xl"
+              color="secondary"
+              class="q-pb-md justify-center"
+            />
           </q-item-section>
         </router-link>
       </q-item-section>
