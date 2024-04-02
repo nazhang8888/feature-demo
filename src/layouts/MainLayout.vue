@@ -28,9 +28,7 @@
       overlay
       behavior="desktop"
     >
-      <q-list>
-        <NavigationPanel />
-      </q-list>
+      <NavigationPanel />
     </q-drawer>
 
     <q-page-container>
@@ -41,8 +39,8 @@
 
 <script setup>
 import { ref } from "vue";
-import NavigationPanel from "components/NavigationPanel.vue";
 import { useQuasar } from "quasar";
+import NavigationPanel from "components/NavigationPanel.vue";
 
 defineOptions({
   name: "MainLayout",

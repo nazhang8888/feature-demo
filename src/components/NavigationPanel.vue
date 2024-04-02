@@ -14,7 +14,7 @@
             <q-icon
               :name="route.meta.icon"
               size="xl"
-              :color="primary"
+              :color="props.color"
               class="q-pb-md justify-center"
             />
           </q-item-section>
@@ -29,6 +29,10 @@ import { useRouter } from "vue-router";
 
 defineOptions({
   name: "NavigationPanel",
+});
+
+const props = defineProps({
+  color: String,
 });
 
 const router = useRouter();

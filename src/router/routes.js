@@ -11,7 +11,7 @@ const routes = [
     name: "Todo's",
     path: "/todo",
     component: () => import("pages/TodoPage.vue"),
-    meta: { layout: MainLayout, icon: "check_box" },
+    meta: { layout: MainLayout, icon: "check" },
   },
   {
     name: "Error",

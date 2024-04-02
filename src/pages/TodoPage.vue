@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="todos-list">
-      <p>The todos are</p>
+      <q-item-label header>Your todos are</q-item-label>
       <div v-for="todo in todoStore.todos" :key="todo.id">
         <p>
           <TodoCard :todo="todo" />
@@ -10,7 +10,7 @@
     </div>
 
     <div class="todos-list">
-      <p>Your favorites are</p>
+      <q-item-label>Your favorites are</q-item-label>
       <div v-for="todo in todoStore.favorites" :key="todo.id">
         <p>
           <TodoCard :todo="todo" />
