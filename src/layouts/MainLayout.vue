@@ -49,8 +49,8 @@ defineOptions({
   components: { NavigationPanel },
 });
 
-const leftDrawerOpen = ref(false);
 const $q = useQuasar();
+const leftDrawerOpen = ref(false);
 const value = ref(false);
 
 function darkToggle() {

@@ -14,6 +14,7 @@ const routes = [
     meta: { layout: MainLayout, icon: "check_box" },
   },
   {
+    name: "Error",
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),
     meta: { layout: MainLayout, icon: "question_mark" },

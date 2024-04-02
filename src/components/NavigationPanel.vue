@@ -30,5 +30,5 @@ defineOptions({
 });
 
 const router = useRouter();
-const routes = router.options.routes;
+const routes = router.options.routes.filter((route) => route.name !== "Error");
 </script>
