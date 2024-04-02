@@ -1,15 +1,13 @@
 <template>
   <div>
     <q-item>
-      <q-item-section avatar>
-        <q-icon name="home" />
-      </q-item-section>
       <q-item-section>
         <router-link
           v-for="route in router.options.routes"
           :key="route.path"
           :to="route.path"
         >
+          <q-item-section avatar> </q-item-section>
           {{ route.name }}
         </router-link>
       </q-item-section>

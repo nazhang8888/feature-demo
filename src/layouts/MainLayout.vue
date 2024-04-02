@@ -18,12 +18,9 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+      <q-label>Navigation Panel</q-label>
       <q-list>
-        <div>
-          <p>
-            <NavigationPanel />
-          </p>
-        </div>
+        <NavigationPanel />
       </q-list>
     </q-drawer>
 
