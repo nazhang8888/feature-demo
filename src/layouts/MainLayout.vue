@@ -15,7 +15,12 @@
 
         <div>Quasar v{{ $q.version }}</div>
         <div class="q-pa-md">
-          <q-toggle @click="darkToggle" color="white" v-model="value" />
+          <q-toggle
+            @click="darkToggle"
+            color="white"
+            v-model="value"
+            name="darktoggle"
+          />
         </div>
       </q-toolbar>
     </q-header>
@@ -51,11 +56,11 @@ const $q = useQuasar();
 const leftDrawerOpen = ref(false);
 const value = ref(false);
 
-function darkToggle() {
+const darkToggle = () => {
   $q.dark.toggle();
-}
+};
 
-function toggleLeftDrawer() {
+const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
-}
+};
 </script>

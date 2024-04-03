@@ -1,16 +1,14 @@
 <template>
   <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    />
-    <p></p>
+    <InteractiveMap />
   </q-page>
 </template>
 
 <script setup>
+import InteractiveMap from "../components/InteractiveMap.vue";
+
 defineOptions({
   name: "IndexPage",
+  components: { InteractiveMap },
 });
 </script>
