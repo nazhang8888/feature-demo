@@ -11,13 +11,17 @@ export const useTodoStore = defineStore("todoStore", {
 
   getters: {
     favorites() {
-      return this.todos.filter((t) => t.isFavorite);
+      return this.todos.filter((todo) => todo.isFavorite);
+    },
+    count() {
+      return this.todos.length;
+    },
+    favoritesCount() {
+      return this.todos.reduce((previous, current) => {
+        return current.isFavorite ? previous + 1 : previous;
+      }, 0);
     },
   },
 
-  actions: {
-    increment() {
-      this.counter++;
-    },
-  },
+  actions: {},
 });
