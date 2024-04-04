@@ -7,11 +7,19 @@
         </q-item-label>
         <div class="row">
           <q-item-section avatar class="q-pr-none q-pl-md items-center">
-            <q-icon :color="props.color" name="favorite" />
+            <q-icon
+              @click="todoStore.toggleFavorite(todo.id)"
+              :color="props.color"
+              name="favorite"
+            />
             Favorite
           </q-item-section>
           <q-item-section avatar class="q-pr-none q-pl-md items-center">
-            <q-icon :color="props.color" name="done" />
+            <q-icon
+              @click="todoStore.finishTodo(todo.id)"
+              :color="props.color"
+              name="done"
+            />
             Done
           </q-item-section>
         </div>
@@ -21,6 +29,8 @@
 </template>
 
 <script setup>
+import { useTodoStore } from "src/stores/todoStore";
+
 defineOptions({
   name: "TodoCard",
 });
@@ -29,4 +39,6 @@ const props = defineProps({
   todo: Object,
   color: String,
 });
+
+const todoStore = useTodoStore();
 </script>

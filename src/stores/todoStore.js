@@ -27,5 +27,14 @@ export const useTodoStore = defineStore("todoStore", {
     addTodo(todo) {
       this.todos.push(todo);
     },
+    finishTodo(id) {
+      this.todos = this.todos.filter((todo) => {
+        return todo.id !== id;
+      });
+    },
+    toggleFavorite(id) {
+      const todo = this.todos.find((todo) => todo.id === id);
+      todo.isFavorite = !todo.isFavorite;
+    },
   },
 });
