@@ -23,5 +23,9 @@ export const useTodoStore = defineStore("todoStore", {
     },
   },
 
-  actions: {},
+  actions: {
+    addTodo(todo) {
+      this.todos.push(todo);
+    },
+  },
 });
