@@ -14,6 +14,18 @@ const routes = [
     meta: { layout: MainLayout, icon: "check" },
   },
   {
+    name: "Table",
+    path: "/table",
+    component: () => import("pages/TablePage.vue"),
+    meta: { layout: MainLayout, icon: "table_view" },
+  },
+  {
+    name: "Gallery",
+    path: "/gallery",
+    component: () => import("pages/GalleryPage.vue"),
+    meta: { layout: MainLayout, icon: "dashboard" },
+  },
+  {
     name: "Error",
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),
