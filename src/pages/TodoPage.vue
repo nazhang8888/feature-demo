@@ -1,38 +1,42 @@
 <template>
-  <q-page class="q-pa-md flex-center" style="max-width: 400px">
-    <q-form
-      @submit.prevent="onSubmit"
-      class="q-gutter-md"
-      autocomplete="off"
-      ref="addTodo"
-    >
-      <q-input
-        filled
-        label="Add an item"
-        lazy-rules
-        v-model="newTodo"
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
-      />
-      <div>
-        <q-btn label="Submit" type="submit" :color="props.color" />
-        <q-btn label="Reset" type="reset" :color="props.color" />
+  <q-page class="q-pa-md flex items-center column">
+    <div>
+      <q-form
+        @submit.prevent="onSubmit"
+        class="q-gutter-md"
+        autocomplete="off"
+        ref="addTodo"
+      >
+        <q-input
+          filled
+          label="Add an item"
+          lazy-rules
+          v-model="newTodo"
+          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        />
+        <div class="flex justify-end">
+          <q-btn label="Submit" type="submit" :color="props.color" />
+          <q-btn label="Reset" type="reset" :color="props.color" />
+        </div>
+      </q-form>
+      <div class="todos-list">
+        <q-item-label header>You have {{ todoStore.count }} items</q-item-label>
+        <div v-for="todo in todoStore.todos" :key="todo.id">
+          <p>
+            <TodoCard :todo="todo" />
+          </p>
+        </div>
       </div>
-    </q-form>
-    <div class="todos-list" header>
-      <q-item-label header>You have {{ todoStore.count }} items</q-item-label>
-      <div v-for="todo in todoStore.todos" :key="todo.id">
-        <p>
-          <TodoCard :todo="todo" />
-        </p>
-      </div>
-    </div>
 
-    <div class="todos-list" header>
-      <q-item-label>You have {{ todoStore.favoritesCount }} items</q-item-label>
-      <div v-for="todo in todoStore.favorites" :key="todo.id">
-        <p>
-          <TodoCard :todo="todo" />
-        </p>
+      <div class="todos-list" header>
+        <q-item-label header
+          >You have {{ todoStore.favoritesCount }} items</q-item-label
+        >
+        <div v-for="todo in todoStore.favorites" :key="todo.id">
+          <p>
+            <TodoCard :todo="todo" />
+          </p>
+        </div>
       </div>
     </div>
   </q-page>

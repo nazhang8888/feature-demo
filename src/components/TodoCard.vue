@@ -1,7 +1,7 @@
 <template>
   <div class="q-px-md q-pb-none" style="max-width: 350px">
     <q-list bordered>
-      <q-item class="justify-start">
+      <q-item v-ripple class="justify-start">
         <q-item-label class="item-center self-center col-grow">
           {{ todo.title }}
         </q-item-label>
