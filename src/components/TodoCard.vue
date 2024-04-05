@@ -9,17 +9,13 @@
           <q-item-section avatar class="q-pr-none q-pl-md items-center">
             <q-icon
               @click="todoStore.toggleFavorite(todo.id)"
-              :color="props.color"
               name="favorite"
+              :class="{ activefavorite: todo.isFavorite }"
             />
             Favorite
           </q-item-section>
           <q-item-section avatar class="q-pr-none q-pl-md items-center">
-            <q-icon
-              @click="todoStore.finishTodo(todo.id)"
-              :color="props.color"
-              name="done"
-            />
+            <q-icon @click="todoStore.finishTodo(todo.id)" name="done" />
             Done
           </q-item-section>
         </div>
@@ -37,7 +33,6 @@ defineOptions({
 
 const props = defineProps({
   todo: Object,
-  color: String,
 });
 
 const todoStore = useTodoStore();

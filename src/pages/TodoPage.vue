@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md flex-center" style="max-width: 400px">
-    <q-form @submit="onSubmit" class="q-gutter-md">
+    <q-form @submit.prevent="onSubmit" class="q-gutter-md">
       <q-input
         filled
         label="Add an item"

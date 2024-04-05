@@ -14,7 +14,7 @@
             <q-icon
               :name="route.meta.icon"
               size="60px"
-              :color="props.color"
+              color="inherit"
               class="q-pb-md justify-center"
             />
           </q-item-section>
@@ -31,9 +31,7 @@ defineOptions({
   name: "NavigationPanel",
 });
 
-const props = defineProps({
-  color: String,
-});
+const props = defineProps({});
 
 const router = useRouter();
 const routes = router.options.routes.filter((route) => route.name !== "Error");
