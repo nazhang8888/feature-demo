@@ -1,4 +1,4 @@
-# Quasar App (feature-demo)
+# Simple Feature Demonstration
 
 A Quasar Project
 
@@ -8,7 +8,7 @@ A Quasar Project
 yarn
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Dev mode
 
 ```bash
 yarn dev
@@ -33,7 +33,3 @@ yarn format
 ```bash
 yarn build
 ```
-
-### Customize the configuration
-
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
