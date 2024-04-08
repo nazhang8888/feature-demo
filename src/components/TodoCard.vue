@@ -1,5 +1,5 @@
 <template>
-  <div class="q-px-md q-pb-none" style="max-width: 350px">
+  <div class="q-px-md q-pb-none" style="max-width: 450px">
     <q-list bordered>
       <q-item v-ripple class="justify-start">
         <q-item-label class="item-center self-center col-grow">

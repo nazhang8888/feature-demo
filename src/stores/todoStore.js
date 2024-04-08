@@ -6,7 +6,6 @@ export const useTodoStore = defineStore("todoStore", {
       { id: 1, title: "buy some milk", isFavorite: false },
       { id: 2, title: "play CS2", isFavorite: true },
     ],
-    name: "Example User",
   }),
 
   getters: {
@@ -24,6 +23,13 @@ export const useTodoStore = defineStore("todoStore", {
   },
 
   actions: {
+    // Ex. asynchronous action when implementing backend.
+    // async getTasks() {
+    //   const res = await fetch("endpoint/todos")
+    //   const data = res.json()
+    //   this.todos = data
+    // },
+
     addTodo(todo) {
       this.todos.push(todo);
     },
@@ -33,6 +39,15 @@ export const useTodoStore = defineStore("todoStore", {
       });
     },
     toggleFavorite(id) {
+      // Ex. asynchronous action when implementing backend.
+      // const res = await fetch("endpoint/todos/" + id, {
+      //  method: "PATCH",
+      //  body: JSON.stringify({ isFavorite: todo.isFavorite }),
+      //  headers: {"Content-Type: "application/json"}
+      // })
+      // if (res.error) {
+      //   console.log(res.error)
+      // }
       const todo = this.todos.find((todo) => todo.id === id);
       todo.isFavorite = !todo.isFavorite;
     },
