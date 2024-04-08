@@ -1,22 +1,36 @@
 # Simple Feature Demonstration
 
-###Includes examples of:
+#### Navigation Bar
 
-#### Navigation Bar: Dynamic nav bar of all routes(minus error page).
+Dynamic nav bar of all routes(minus error page).
 
-#### Map Integration: Displays a map using openlayers 9.
+#### Map Integration
 
-#### Todo List: Displays tasks with favorite and removal functionality.
+Displays a map using openlayers 9.
 
-#### Table: Show records in a tabular format.
+#### Todo List
 
-#### Form Data Validation: Validates user input (e.g., empty forms).
+Displays tasks with favorite and removal functionality.
 
-#### Date Range Picker: Allow users to choose multiple date ranges which returns an array of objects.
+#### Table
 
-#### Carousel Dialogue Box: Use modals for displaying additional information or user prompts.
+Show records in a tabular format.
 
-#### Sidebar: Includes a sidebar for additional functionality.
+#### Form Data Validation
+
+Validates user input (e.g., empty forms).
+
+#### Date Range Picker
+
+Allow users to choose multiple date ranges which returns an array of objects.
+
+#### Carousel Dialogue Box
+
+Use modals for displaying additional information or user prompts.
+
+#### Sidebar
+
+Includes a sidebar for additional functionality.
 
 ## Install the dependencies
 
