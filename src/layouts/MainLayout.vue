@@ -28,7 +28,6 @@
     <q-drawer
       v-model="leftDrawerOpen"
       :width="100"
-      show-if-above
       bordered
       overlay
       behavior="desktop"
