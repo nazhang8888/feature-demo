@@ -2,7 +2,7 @@
   <div class="">
     <div class="q-pa-md">
       <q-date v-model="days" range multiple />
-      <div class="q-pb-sm">Model: {{ days }}</div>
+      <div class="q-pb-sm" style="width: 300px">Model: {{ days }}</div>
     </div>
   </div>
 </template>
