@@ -20,7 +20,11 @@
         </div>
       </q-form>
       <div class="todos-list">
-        <q-item-label header>You have {{ todoStore.count }} items</q-item-label>
+        <q-item-label header
+          >You have {{ todoStore.count }} item{{
+            todoStore.count !== 1 ? "s" : ""
+          }}</q-item-label
+        >
         <div v-for="todo in todoStore.todos" :key="todo.id">
           <p>
             <TodoCard :todo="todo" />
@@ -30,7 +34,9 @@
 
       <div class="todos-list" header>
         <q-item-label header
-          >You have {{ todoStore.favoritesCount }} items</q-item-label
+          >You have {{ todoStore.favoritesCount }} item{{
+            todoStore.favoritesCount !== 1 ? "s" : ""
+          }}</q-item-label
         >
         <div v-for="todo in todoStore.favorites" :key="todo.id">
           <p>

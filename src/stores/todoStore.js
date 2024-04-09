@@ -3,8 +3,8 @@ import { defineStore } from "pinia";
 export const useTodoStore = defineStore("todoStore", {
   state: () => ({
     todos: [
-      { id: 1, title: "buy some milk", isFavorite: false },
-      { id: 2, title: "play CS2", isFavorite: true },
+      { id: 0, title: "buy some milk", isFavorite: false },
+      { id: 1, title: "play CS2", isFavorite: true },
     ],
   }),
 
