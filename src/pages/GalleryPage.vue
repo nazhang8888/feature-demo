@@ -1,8 +1,10 @@
 <template>
-  <q-page class="fit row wrap justify-evenly items-start content-start">
-    <DateRangePicker />
-    <ColorPicker />
-    <CarouselDialog />
+  <q-page class="fit">
+    <div class="row items-center">
+      <DateRangePicker class="col" />
+      <ColorPicker class="col justify-center" />
+      <CarouselDialog class="col flex justify-center" />
+    </div>
   </q-page>
 </template>
 
