@@ -8,6 +8,8 @@ yarn.lock
 .eslintignore
 .eslintrc.cjs
 
+/src/assets/data
+
 # Quasar core related directories
 .quasar
 /dist
