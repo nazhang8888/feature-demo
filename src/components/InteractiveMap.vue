@@ -4,6 +4,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useMapStore } from "../stores/mapStore";
 import { Map, View } from "ol";
 import { Tile as TileLayer } from "ol/layer";
 import { OSM } from "ol/source";
@@ -13,6 +14,7 @@ defineOptions({
 });
 
 const map = ref(null);
+const mapStore = useMapStore();
 
 function createMap() {
   map.value = new Map({
@@ -20,13 +22,17 @@ function createMap() {
     layers: [
       new TileLayer({
         source: new OSM(),
+        name: "OpenStreetMap",
+        isBaseMap: true,
       }),
     ],
     view: new View({
       center: [0, 0],
-      zoom: 2,
+      zoom: 4,
     }),
   });
+
+  mapStore.setMap(map);
 }
 
 onMounted(() => {
