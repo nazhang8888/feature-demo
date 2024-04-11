@@ -16,7 +16,7 @@ import CarouselDialog from "../components/CarouselDialogue.vue";
 import FilePicker from "../components/FilePicker.vue";
 
 defineOptions({
-  name: "GalleryPage",
+  name: "SettingsPage",
   components: { DateRangePicker, ColorPicker, CarouselDialog, FilePicker },
 });
 </script>

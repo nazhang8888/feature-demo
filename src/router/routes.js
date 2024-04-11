@@ -20,10 +20,10 @@ const routes = [
     meta: { layout: MainLayout, icon: "table_view" },
   },
   {
-    name: "Gallery",
-    path: "/gallery",
-    component: () => import("pages/GalleryPage.vue"),
-    meta: { layout: MainLayout, icon: "dashboard" },
+    name: "Settings",
+    path: "/settings",
+    component: () => import("pages/SettingsPage.vue"),
+    meta: { layout: MainLayout, icon: "settings" },
   },
   {
     name: "Error",

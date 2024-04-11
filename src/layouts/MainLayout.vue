@@ -5,16 +5,6 @@
         <NavigationFab />
 
         <q-toolbar-title> Feature Demo </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
-        <div class="q-pa-md">
-          <q-toggle
-            @click="darkToggle"
-            color="white"
-            v-model="value"
-            name="darktoggle"
-          />
-        </div>
       </q-toolbar>
     </q-header>
 
@@ -33,11 +23,4 @@ defineOptions({
   name: "MainLayout",
   components: { NavigationFab },
 });
-
-const $q = useQuasar();
-const value = ref(false);
-
-const darkToggle = () => {
-  $q.dark.toggle();
-};
 </script>
