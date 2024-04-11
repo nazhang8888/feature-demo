@@ -1,5 +1,14 @@
 <template>
-  <q-fab flat dense round icon="menu" aria-label="Menu" direction="down">
+  <q-fab
+    flat
+    dense
+    round
+    icon="menu"
+    aria-label="Menu"
+    vertical-actions-align="left"
+    direction="down"
+    push
+  >
     <q-fab-action
       v-for="route in routes"
       :key="route.path"
@@ -8,13 +17,10 @@
       exact-active-class="exact-active"
       active-class="active"
       color="primary"
+      :label="route.name"
+      label-position="right"
+      :icon="route.meta.icon"
     >
-      <q-icon
-        :name="route.meta.icon"
-        size="45px"
-        color="inherit"
-        class="justify-center"
-      />
     </q-fab-action>
   </q-fab>
 </template>
