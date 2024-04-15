@@ -2,22 +2,22 @@ import MainLayout from "layouts/MainLayout.vue";
 
 const routes = [
   {
-    name: "Home",
+    name: "Map",
     path: "/",
     component: () => import("pages/IndexPage.vue"),
     meta: { layout: MainLayout, icon: "public" },
-  },
-  {
-    name: "Todo's",
-    path: "/todo",
-    component: () => import("pages/TodoPage.vue"),
-    meta: { layout: MainLayout, icon: "check_circle" },
   },
   {
     name: "Table",
     path: "/table",
     component: () => import("pages/TablePage.vue"),
     meta: { layout: MainLayout, icon: "table_view" },
+  },
+  {
+    name: "Todo List",
+    path: "/todo",
+    component: () => import("pages/TodoPage.vue"),
+    meta: { layout: MainLayout, icon: "check_circle" },
   },
   {
     name: "Settings",
