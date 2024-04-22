@@ -9,7 +9,7 @@
   </q-page>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import DateRangePicker from '@/components/DateRangePicker.vue';
 import ColorPicker from '@/components/ColorPicker.vue';
 import CarouselDialog from '@/components/CarouselDialogue.vue';

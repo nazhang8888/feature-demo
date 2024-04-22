@@ -4,7 +4,7 @@
   </q-page>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import DataTable from '@/components/DataTable.vue';
 
 defineOptions({

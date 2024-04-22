@@ -14,7 +14,7 @@
   </q-fab>
 </template>
 
-<script setup>
+<script setup lang="ts">
 //   import { ref, watch } from 'vue';
 //   import { useMapStore } from '../stores/mapStore';
 
