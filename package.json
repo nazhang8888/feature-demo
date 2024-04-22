@@ -1,8 +1,8 @@
 {
-  "name": "app-demo",
+  "name": "feature-demo",
   "version": "0.0.1",
-  "description": "app-demo",
-  "productName": "app-demo",
+  "description": "feature-demo",
+  "productName": "feature-demo",
   "author": "Nicholas Chang <nazhang@pm.me>",
   "private": true,
   "scripts": {
