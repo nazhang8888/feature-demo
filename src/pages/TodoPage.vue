@@ -22,7 +22,7 @@
       <div class="todos-list">
         <q-item-label header
           >You have {{ todoStore.count }} item{{
-            todoStore.count !== 1 ? "s" : ""
+            todoStore.count !== 1 ? 's' : ''
           }}</q-item-label
         >
         <div v-for="todo in todoStore.todos" :key="todo.id">
@@ -35,7 +35,7 @@
       <div class="todos-list" header>
         <q-item-label header
           >You have {{ todoStore.favoritesCount }} item{{
-            todoStore.favoritesCount !== 1 ? "s" : ""
+            todoStore.favoritesCount !== 1 ? 's' : ''
           }}</q-item-label
         >
         <div v-for="todo in todoStore.favorites" :key="todo.id">
@@ -48,13 +48,13 @@
   </q-page>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import TodoCard from "../components/TodoCard.vue";
-import { useTodoStore } from "../stores/todoStore";
+<script setup lang="ts">
+import { ref } from 'vue';
+import TodoCard from '../components/TodoCard.vue';
+import { useTodoStore } from '../stores/todoStore';
 
 defineOptions({
-  name: "TodoPage",
+  name: 'TodoPage',
   components: { TodoCard },
 });
 
@@ -63,7 +63,7 @@ const props = defineProps({
 });
 
 const todoStore = useTodoStore();
-const newTodo = ref("");
+const newTodo = ref('');
 
 const onSubmit = () => {
   if (newTodo.value.length > 0) {
@@ -72,7 +72,7 @@ const onSubmit = () => {
       isFavorite: false,
       id: todoStore.count + 1,
     });
-    newTodo.value = "";
+    newTodo.value = '';
   }
 };
 </script>

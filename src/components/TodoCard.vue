@@ -25,12 +25,13 @@
 </template>
 
 <script setup>
-import { useTodoStore } from "src/stores/todoStore";
+import { useTodoStore } from '@/stores/todoStore';
 
 defineOptions({
-  name: "TodoCard",
+  name: 'TodoCard',
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
   todo: Object,
 });

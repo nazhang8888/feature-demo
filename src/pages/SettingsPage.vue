@@ -10,13 +10,13 @@
 </template>
 
 <script setup>
-import DateRangePicker from "../components/DateRangePicker.vue";
-import ColorPicker from "../components/ColorPicker.vue";
-import CarouselDialog from "../components/CarouselDialogue.vue";
-import FilePicker from "../components/FilePicker.vue";
+import DateRangePicker from '@/components/DateRangePicker.vue';
+import ColorPicker from '@/components/ColorPicker.vue';
+import CarouselDialog from '@/components/CarouselDialogue.vue';
+import FilePicker from '@/components/FilePicker.vue';
 
 defineOptions({
-  name: "SettingsPage",
+  name: 'SettingsPage',
   components: { DateRangePicker, ColorPicker, CarouselDialog, FilePicker },
 });
 </script>

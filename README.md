@@ -1,65 +1,41 @@
-# Simple Feature Demonstration
+# app-demo (app-demo)
 
-#### Navigation Bar
-
-Dynamic nav bar of all routes(minus error page).
-
-#### Map Integration
-
-Displays a map using openlayers 9.
-
-#### Todo List
-
-Displays tasks with favorite and removal functionality.
-
-#### Table
-
-Show records in a tabular format.
-
-#### Form Data Validation
-
-Validates user input (e.g., empty forms).
-
-#### Date Range Picker
-
-Allow users to choose multiple date ranges which returns an array of objects.
-
-#### Carousel Dialogue Box
-
-Use modals for displaying additional information or user prompts.
-
-#### Sidebar
-
-Includes a sidebar for additional functionality.
+app-demo
 
 ## Install the dependencies
-
 ```bash
 yarn
+# or
+npm install
 ```
 
-### Dev mode
-
+### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-yarn dev
+quasar dev
 ```
+
 
 ### Lint the files
-
 ```bash
 yarn lint
-
+# or
+npm run lint
 ```
+
 
 ### Format the files
-
 ```bash
 yarn format
-
+# or
+npm run format
 ```
+
+
 
 ### Build the app for production
-
 ```bash
-yarn build
+quasar build
 ```
+
+### Customize the configuration
+See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).

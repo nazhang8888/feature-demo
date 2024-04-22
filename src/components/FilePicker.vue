@@ -11,10 +11,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 
 defineOptions({
-  name: "FilePicker",
+  name: 'FilePicker',
 });
 
 const files = ref(null);

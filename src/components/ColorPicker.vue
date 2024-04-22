@@ -5,11 +5,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 
 defineOptions({
-  name: "ColorPicker",
+  name: 'ColorPicker',
 });
 
-const hex = ref("#FF00FF");
+const hex = ref('#FF00FF');
 </script>

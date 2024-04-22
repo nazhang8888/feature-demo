@@ -38,14 +38,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 
 defineOptions({
-  name: "CarouselDialogue",
+  name: 'CarouselDialogue',
 });
 const slide = ref(1);
 
 const carousel = ref(false);
 const lorem =
-  "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus, ratione eum minus fuga, quasi dicta facilis corporis magnam, suscipit at quo nostrum!";
+  'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus, ratione eum minus fuga, quasi dicta facilis corporis magnam, suscipit at quo nostrum!';
 </script>
