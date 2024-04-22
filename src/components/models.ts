@@ -1,6 +1,5 @@
 export interface Todo {
-  id: number;
-  content: string;
+  todo: object;
 }
 
 export interface Meta {

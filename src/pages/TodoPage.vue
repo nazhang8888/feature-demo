@@ -15,8 +15,8 @@
           :rules="[(val) => (val && val.length > 0) || 'Please type something']"
         />
         <div class="flex justify-end">
-          <q-btn label="Submit" type="submit" :color="props.color" />
-          <q-btn label="Reset" type="reset" :color="props.color" />
+          <q-btn label="Submit" type="submit" />
+          <q-btn label="Reset" type="reset" />
         </div>
       </q-form>
       <div class="todos-list">
@@ -56,10 +56,6 @@ import { useTodoStore } from '../stores/todoStore';
 defineOptions({
   name: 'TodoPage',
   components: { TodoCard },
-});
-
-const props = defineProps({
-  color: String,
 });
 
 const todoStore = useTodoStore();
