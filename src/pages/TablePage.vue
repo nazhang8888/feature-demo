@@ -5,10 +5,10 @@
 </template>
 
 <script setup>
-import DataTable from "../components/DataTable.vue";
+import DataTable from '@/components/DataTable.vue';
 
 defineOptions({
-  name: "TablePage",
+  name: 'TablePage',
   components: { DataTable },
 });
 </script>

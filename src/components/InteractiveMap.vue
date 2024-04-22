@@ -1,87 +1,111 @@
 <template>
+  <div id="map-container"></div>
   <PopUp />
-  <div id="map-container" style="height: 100vh"></div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 
-import PopUp from "../components/PopUp.vue";
-import { useMapStore } from "../stores/mapStore";
+import { useMapStore } from '@/stores/mapStore';
+// import { useDataStore } from '@/stores/dataStore';
 
-import { Map, View, Overlay } from "ol";
-import { Tile as TileLayer } from "ol/layer";
-import { OSM } from "ol/source";
-import GeoJSON from "ol/format/GeoJSON";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { toStringHDMS } from "ol/coordinate";
-import { toLonLat } from "ol/proj";
+import { Map, View } from 'ol';
+import { Tile as TileLayer } from 'ol/layer';
+import { OSM } from 'ol/source';
+// import GeoJSON from 'ol/format/GeoJSON';
+// import VectorLayer from 'ol/layer/Vector';
+// import VectorSource from 'ol/source/Vector';
+// import { VectorImage } from 'ol/layer';
+import { fromLonLat } from 'ol/proj';
 
-import Link from "ol/interaction/Link";
-import Draw from "ol/interaction/Draw";
-import Snap from "ol/interaction/Snap";
+import Link from 'ol/interaction/Link';
+import PopUp from '@/components/PopUp.vue';
+
+interface CustomOptions extends TileLayer<OSM> {
+  source?: OSM;
+  name?: string;
+  isBaseMap?: boolean;
+}
 
 defineOptions({
-  name: "InteractiveMap",
+  name: 'InteractiveMap',
   components: { PopUp },
 });
 
-const map = ref(null);
+const map = ref();
 const mapStore = useMapStore();
-const source = new VectorSource();
 
-onMounted(() => {
-  const container = document.getElementById("popup");
-  const closer = document.getElementById("popup-closer");
-  const content = document.getElementById("popup-content");
-
-  const overlay = new Overlay({
-    element: container,
-    autoPan: {
-      animation: {
-        duration: 250,
-      },
-    },
-  });
-
-  closer.onclick = function () {
-    overlay.setPosition(undefined);
-    closer.blur();
-    return false;
-  };
-
+function createMap() {
   map.value = new Map({
-    target: "map-container",
-    overlays: [overlay],
+    target: 'map-container',
+    // overlays: [overlay],
     layers: [
       new TileLayer({
         source: new OSM(),
-        name: "OpenStreetMap",
-      }),
-      new VectorLayer({
-        source: new VectorSource({
-          format: new GeoJSON(),
-          url: "src/assets/data/countries.json",
-        }),
-      }),
+        name: 'OpenStreetMap',
+        isBaseMap: true,
+      } as CustomOptions),
+      // new VectorLayer({
+      //   source: vectorSourceCountries,
+      // }),
+      // new VectorLayer({
+      //   source: vectorSourceOutline,
+      // }),
+      // new VectorLayer({
+      //   source: vectorSourceStates,
+      // }),
+      // new VectorLayer({
+      //   source: vectorSourceCounties,
+      //   style: null,
+      // }),
     ],
     view: new View({
-      center: [0, 0],
-      zoom: 4,
+      center: fromLonLat([0, 0]),
+      zoom: 2,
     }),
   });
 
   map.value.addInteraction(new Link());
 
-  map.value.on("singleclick", function (event) {
-    const coordinate = event.coordinate;
-    const hdms = toStringHDMS(toLonLat(coordinate));
-
-    content.innerHTML = "<p>You clicked here:</p><code>" + hdms + "</code>";
-    overlay.setPosition(coordinate);
-  });
-
   mapStore.setMap(map.value);
+  console.log('after setMap' + map.value);
+}
+// const dataStore = useDataStore();
+
+// const vectorSourceCountries = new VectorSource({
+//   features: new GeoJSON({ featureProjection: "EPSG:3857" }).readFeatures(
+//     dataStore.countries.countries
+//   ),
+// });
+// const vectorSourceOutline = new VectorSource({
+//   features: new GeoJSON({ featureProjection: "EPSG:3857" }).readFeatures(
+//     dataStore.outline.outline
+//   ),
+// });
+// const vectorSourceStates = new VectorSource({
+//   features: new GeoJSON({ featureProjection: "EPSG:3857" }).readFeatures(
+//     dataStore.states.states
+//   ),
+// });
+// const vectorSourceCounties = new VectorSource({
+//   features: new GeoJSON({ featureProjection: "EPSG:3857" }).readFeatures(
+//     dataStore.counties.counties
+//   ),
+// });
+
+onMounted(() => {
+  createMap();
+  console.log('onMounted Map' + map.value);
 });
 </script>
+
+<style lang="scss">
+@import '/node_modules/ol/ol.css';
+
+#map-container {
+  height: 95vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+</style>

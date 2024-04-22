@@ -5,6 +5,7 @@
         <NavigationFab />
 
         <q-toolbar-title> Feature Demo </q-toolbar-title>
+        <LayersPicker v-if="route.path === '/'" />
       </q-toolbar>
     </q-header>
 
@@ -14,13 +15,18 @@
   </q-layout>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useQuasar } from "quasar";
-import NavigationFab from "components/NavigationFab.vue";
+<script setup lang="ts">
+// import { ref } from 'vue';
+// import { useQuasar } from 'quasar';
+import { useRoute } from 'vue-router';
+
+import NavigationFab from '@/components/NavigationFab.vue';
+import LayersPicker from '@/components/LayersPicker.vue';
 
 defineOptions({
-  name: "MainLayout",
-  components: { NavigationFab },
+  name: 'MainLayout',
+  components: { NavigationFab, LayersPicker },
 });
+
+const route = useRoute();
 </script>

@@ -17,9 +17,9 @@
       exact-active-class="exact-active"
       active-class="active"
       color="primary"
-      :label="route.name"
+      :label="String(route.name)"
       label-position="right"
-      :icon="route.meta.icon"
+      :icon="route.meta ? String(route.meta.icon) : ''"
     />
     <q-fab-action
       @click="darkToggle"
@@ -31,17 +31,17 @@
   </q-fab>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 
 defineOptions({
-  name: "NavigationFab",
+  name: 'NavigationFab',
 });
 
 const router = useRouter();
-const routes = router.options.routes.filter((route) => route.name !== "Error");
+const routes = router.options.routes.filter((route) => route.name !== 'Error');
 const $q = useQuasar();
 const value = ref(false);
 

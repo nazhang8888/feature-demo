@@ -79,10 +79,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 
 defineOptions({
-  name: "DataTable",
+  name: 'DataTable',
 });
 
 const selected = ref();
