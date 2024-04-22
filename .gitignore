@@ -3,21 +3,21 @@
 node_modules
 
 # project specific files
-# .vscode
-# yarn.lock
-# package-lock.json
-# quasar.config.js
-# postcss.config.js
-# .prettierrc
-# .npmrc
-# .eslintrc.js
-# .eslintignore
-# .editorconfig
-# @/assets/data
+.vscode
+yarn.lock
+package-lock.json
+quasar.config.js
+postcss.config.js
+.prettierrc
+.npmrc
+.eslintrc.js
+.eslintignore
+.editorconfig
+@/assets/data
 
 
 # Quasar core related directories
-# .quasar
+.quasar
 /dist
 # /quasar.config.*.temporary.compiled*
 
