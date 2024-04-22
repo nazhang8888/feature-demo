@@ -8,12 +8,18 @@ yarn.lock
 package-lock.json
 quasar.config.js
 postcss.config.js
+jsconfig.json
 .prettierrc
 .npmrc
-.eslintrc.js
+.eslintrc.cjs
 .eslintignore
 .editorconfig
+tsconfig.json
+tsconfig.vue-tsc.json
+postcss.config.cjs
 @/assets/data
+
+
 
 
 # Quasar core related directories
@@ -49,3 +55,4 @@ yarn-error.log*
 
 # local .env files
 .env.local*
+/src/env.d.ts

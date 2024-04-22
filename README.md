@@ -1,41 +1,25 @@
-# app-demo (app-demo)
+# Simple Feature Demonstration
 
-app-demo
+#### Navigation Bar
 
-## Install the dependencies
-```bash
-yarn
-# or
-npm install
-```
+Dynamic nav bar of all routes(minus error page).
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
+#### Map Integration
 
+Displays a map using openlayers 9.
 
-### Lint the files
-```bash
-yarn lint
-# or
-npm run lint
-```
+#### Todo List
 
+Displays tasks with favorite and removal functionality.
 
-### Format the files
-```bash
-yarn format
-# or
-npm run format
-```
+#### Table
 
+Show records in a tabular format.
 
+#### Form Data Validation
 
-### Build the app for production
-```bash
-quasar build
-```
+Validates user input (e.g., empty forms).
 
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+#### Sidebar
+
+Includes a sidebar for additional functionality.
