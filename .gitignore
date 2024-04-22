@@ -5,27 +5,28 @@ node_modules
 # project specific files
 .vscode
 yarn.lock
-package-lock.json
-quasar.config.js
-postcss.config.js
-jsconfig.json
-.prettierrc
-.npmrc
-.eslintrc.cjs
-.eslintignore
 .editorconfig
-tsconfig.json
-tsconfig.vue-tsc.json
+.npmrc
+.prettierrc
+package-lock.json
+.eslintignore
+.eslintrc.cjs
+
 postcss.config.cjs
+postcss.config.js
+
 @/assets/data
 
-
+tsconfig.json
+tsconfig.vue-tsc.json
+jsconfig.json
 
 
 # Quasar core related directories
 .quasar
 /dist
-# /quasar.config.*.temporary.compiled*
+quasar.config.js
+/quasar.config.*.temporary.compiled*
 
 # Cordova related directories and files
 /src-cordova/node_modules
@@ -55,4 +56,3 @@ yarn-error.log*
 
 # local .env files
 .env.local*
-/src/env.d.ts
