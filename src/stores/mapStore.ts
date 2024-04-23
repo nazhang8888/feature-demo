@@ -1,8 +1,12 @@
 import { defineStore } from 'pinia';
 import { Map } from 'ol';
 
+type State = {
+  map: Map;
+};
+
 export const useMapStore = defineStore('mapStore', {
-  state: () => ({
+  state: (): State => ({
     map: new Map({}),
   }),
 

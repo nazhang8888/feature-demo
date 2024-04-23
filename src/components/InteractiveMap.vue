@@ -1,13 +1,9 @@
-<template>
-  <div id="map-container"></div>
-  <PopUp />
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
 import { useMapStore } from '@/stores/mapStore';
 // import { useDataStore } from '@/stores/dataStore';
+import Overlay from 'ol/Overlay';
 
 import { Map, View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
@@ -32,13 +28,14 @@ defineOptions({
   components: { PopUp },
 });
 
-const map = ref();
+const showPopUp = ref(false);
+
 const mapStore = useMapStore();
 
 function createMap() {
-  map.value = new Map({
+  let map = new Map({
     target: 'map-container',
-    // overlays: [overlay],
+    overlays: [],
     layers: [
       new TileLayer({
         source: new OSM(),
@@ -65,10 +62,9 @@ function createMap() {
     }),
   });
 
-  map.value.addInteraction(new Link());
+  map.addInteraction(new Link());
 
-  mapStore.setMap(map.value);
-  console.log('after setMap' + map.value);
+  mapStore.setMap(map);
 }
 // const dataStore = useDataStore();
 
@@ -93,11 +89,39 @@ function createMap() {
 //   ),
 // });
 
+function onClick() {
+  showPopUp.value = !showPopUp.value;
+  if (showPopUp.value) {
+    let container = document.getElementById('popup') as HTMLElement;
+    let overlay = new Overlay({
+      element: container,
+      autoPan: {
+        animation: {
+          duration: 250,
+        },
+      },
+    });
+    mapStore.map.on('singleclick', function (e) {
+      if (showPopUp.value === false) {
+        overlay.setPosition(undefined);
+      } else {
+        const coordinate = e.coordinate;
+        overlay.setPosition(coordinate);
+        mapStore.map.addOverlay(overlay);
+      }
+    });
+  }
+}
+
 onMounted(() => {
   createMap();
-  console.log('onMounted Map' + map.value);
 });
 </script>
+
+<template>
+  <div id="map-container" @click="onClick()"></div>
+  <PopUp v-show="showPopUp === true" />
+</template>
 
 <style lang="scss">
 @import '/node_modules/ol/ol.css';
