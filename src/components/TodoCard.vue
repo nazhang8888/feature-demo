@@ -25,15 +25,19 @@
 </template>
 
 <script setup lang="ts">
+import { PropType } from 'vue';
 import { useTodoStore } from '@/stores/todoStore';
+import { Todo } from '@/models';
 
 defineOptions({
   name: 'TodoCard',
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const props = defineProps({
-  todo: Object,
+defineProps({
+  todo: {
+    type: Object as PropType<Todo>,
+    required: true,
+  },
 });
 
 const todoStore = useTodoStore();
