@@ -1,8 +1,13 @@
 import { defineStore } from 'pinia';
-//disabling eslint for this file
-/* eslint-disable */
+
+import { Todo } from '@/models';
+
+type State = {
+  todos: Todo[];
+};
+
 export const useTodoStore = defineStore('todoStore', {
-  state: () => ({
+  state: (): State => ({
     todos: [
       { id: 0, title: 'buy some milk', isFavorite: false },
       { id: 1, title: 'play CS2', isFavorite: true },
@@ -10,13 +15,13 @@ export const useTodoStore = defineStore('todoStore', {
   }),
 
   getters: {
-    favorites(): any {
+    favorites(): Todo[] {
       return this.todos.filter((todo) => todo.isFavorite);
     },
-    count(): any {
+    count(): number {
       return this.todos.length;
     },
-    favoritesCount(): any {
+    favoritesCount(): number {
       return this.todos.reduce((previous, current) => {
         return current.isFavorite ? previous + 1 : previous;
       }, 0);
@@ -31,15 +36,15 @@ export const useTodoStore = defineStore('todoStore', {
     //   this.todos = data
     // },
 
-    addTodo(todo: any) {
+    addTodo(todo: Todo) {
       this.todos.push(todo);
     },
-    finishTodo(id: any) {
+    finishTodo(id: number | undefined) {
       this.todos = this.todos.filter((todo) => {
         return todo.id !== id;
       });
     },
-    toggleFavorite(id: any) {
+    toggleFavorite(id: number | undefined) {
       // Ex. asynchronous action when implementing backend.
       // const res = await fetch("endpoint/todos/" + id, {
       //  method: "PATCH",
