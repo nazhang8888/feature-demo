@@ -1,9 +1,3 @@
-<template>
-  <q-page class="flex flex-center">
-    <DataTable />
-  </q-page>
-</template>
-
 <script setup lang="ts">
 import DataTable from '@/components/DataTable.vue';
 
@@ -12,3 +6,9 @@ defineOptions({
   components: { DataTable },
 });
 </script>
+
+<template>
+  <q-page class="flex flex-center">
+    <DataTable />
+  </q-page>
+</template>

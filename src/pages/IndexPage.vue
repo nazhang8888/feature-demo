@@ -1,9 +1,3 @@
-<template>
-  <q-page class="flex flex-center">
-    <InteractiveMap />
-  </q-page>
-</template>
-
 <script setup lang="ts">
 // import { ref } from 'vue';
 // import { useMapStore } from '@/stores/mapStore';
@@ -16,3 +10,9 @@ defineOptions({
 
 // const mapStore = useMapStore();
 </script>
+
+<template>
+  <q-page class="flex flex-center">
+    <InteractiveMap />
+  </q-page>
+</template>

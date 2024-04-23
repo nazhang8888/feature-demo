@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+defineOptions({
+  name: 'DataTable',
+});
+
+const selected = ref();
+</script>
+
 <template>
   <q-table
     row-key="id"
@@ -77,13 +87,3 @@
   >
   </q-table>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-
-defineOptions({
-  name: 'DataTable',
-});
-
-const selected = ref();
-</script>

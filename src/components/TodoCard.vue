@@ -1,3 +1,18 @@
+<script setup lang="ts">
+import { useTodoStore } from '@/stores/todoStore';
+import { Todo } from '@/models';
+
+defineOptions({
+  name: 'TodoCard',
+});
+
+defineProps<{
+  todo: Todo;
+}>();
+
+const todoStore = useTodoStore();
+</script>
+
 <template>
   <div class="q-px-md q-pb-none" style="max-width: 450px">
     <q-list bordered>
@@ -23,22 +38,3 @@
     </q-list>
   </div>
 </template>
-
-<script setup lang="ts">
-import { PropType } from 'vue';
-import { useTodoStore } from '@/stores/todoStore';
-import { Todo } from '@/models';
-
-defineOptions({
-  name: 'TodoCard',
-});
-
-defineProps({
-  todo: {
-    type: Object as PropType<Todo>,
-    required: true,
-  },
-});
-
-const todoStore = useTodoStore();
-</script>

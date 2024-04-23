@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import TodoCard from '../components/TodoCard.vue';
+import { useTodoStore } from '../stores/todoStore';
+
+defineOptions({
+  name: 'TodoPage',
+  components: { TodoCard },
+});
+
+const todoStore = useTodoStore();
+const newTodo = ref('');
+
+const onSubmit = () => {
+  if (newTodo.value.length > 0) {
+    todoStore.addTodo({
+      title: newTodo.value,
+      isFavorite: false,
+      id: todoStore.count + 1,
+    });
+    newTodo.value = '';
+  }
+};
+</script>
+
 <template>
   <q-page class="q-pa-md flex items-center column">
     <div>
@@ -47,28 +72,3 @@
     </div>
   </q-page>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import TodoCard from '../components/TodoCard.vue';
-import { useTodoStore } from '../stores/todoStore';
-
-defineOptions({
-  name: 'TodoPage',
-  components: { TodoCard },
-});
-
-const todoStore = useTodoStore();
-const newTodo = ref('');
-
-const onSubmit = () => {
-  if (newTodo.value.length > 0) {
-    todoStore.addTodo({
-      title: newTodo.value,
-      isFavorite: false,
-      id: todoStore.count + 1,
-    });
-    newTodo.value = '';
-  }
-};
-</script>

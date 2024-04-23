@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+defineOptions({
+  name: 'FilePicker',
+});
+
+const files = ref(null);
+</script>
+
 <template>
   <q-file
     v-model="files"
@@ -9,13 +19,3 @@
     class="col q-pa-md"
   />
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-
-defineOptions({
-  name: 'FilePicker',
-});
-
-const files = ref(null);
-</script>

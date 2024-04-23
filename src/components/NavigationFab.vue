@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
+
+defineOptions({
+  name: 'NavigationFab',
+});
+
+const router = useRouter();
+const routes = router.options.routes.filter((route) => route.name !== 'Error');
+const $q = useQuasar();
+const value = ref(false);
+
+const darkToggle = () => {
+  $q.dark.toggle();
+};
+</script>
+
 <template>
   <q-fab
     flat
@@ -30,22 +49,3 @@
     />
   </q-fab>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useQuasar } from 'quasar';
-
-defineOptions({
-  name: 'NavigationFab',
-});
-
-const router = useRouter();
-const routes = router.options.routes.filter((route) => route.name !== 'Error');
-const $q = useQuasar();
-const value = ref(false);
-
-const darkToggle = () => {
-  $q.dark.toggle();
-};
-</script>

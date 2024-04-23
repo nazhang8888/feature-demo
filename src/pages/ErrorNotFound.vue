@@ -1,3 +1,9 @@
+<script setup lang="ts">
+defineOptions({
+  name: 'ErrorNotFound',
+});
+</script>
+
 <template>
   <div class="fullscreen text-center q-pa-md flex flex-center">
     <div>
@@ -9,9 +15,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineOptions({
-  name: 'ErrorNotFound',
-});
-</script>

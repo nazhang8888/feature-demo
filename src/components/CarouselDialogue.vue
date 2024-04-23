@@ -1,3 +1,16 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+defineOptions({
+  name: 'CarouselDialogue',
+});
+const slide = ref(1);
+
+const carousel = ref(false);
+const lorem =
+  'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus, ratione eum minus fuga, quasi dicta facilis corporis magnam, suscipit at quo nostrum!';
+</script>
+
 <template>
   <div class="q-pa-md q-gutter-sm">
     <q-btn label="Carousel" @click="carousel = true" />
@@ -36,16 +49,3 @@
     </q-dialog>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-
-defineOptions({
-  name: 'CarouselDialogue',
-});
-const slide = ref(1);
-
-const carousel = ref(false);
-const lorem =
-  'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus, ratione eum minus fuga, quasi dicta facilis corporis magnam, suscipit at quo nostrum!';
-</script>
