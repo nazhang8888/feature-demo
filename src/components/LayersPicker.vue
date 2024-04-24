@@ -9,31 +9,6 @@
 defineOptions({
   name: 'LayersPicker',
 });
-
-//   const mapStore = useMapStore();
-
-// const addLayers = () => {
-//   layers.forEach((layer) => {
-//     mapStore.map.addLayer(
-//       new VectorImage({
-//         source: new VectorSource({
-//           features: new GeoJSON({
-//             featureProjection: "EPSG:3857",
-//           }).readFeatures(layer.layer),
-//         }),
-//         name: layer.name,
-//       })
-//     );
-//   });
-// };
-
-// watch(mapStore.map, () => {
-//   addLayers();
-// });
-
-// const toggleLayer = (layer) => {
-//   layer.setVisible(!layer.getVisible());
-// };
 </script>
 
 <template>

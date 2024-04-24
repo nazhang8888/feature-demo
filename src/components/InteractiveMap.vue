@@ -29,6 +29,7 @@ defineOptions({
 });
 
 const showPopUp = ref(false);
+const coordinate = ref([0, 0]);
 
 const mapStore = useMapStore();
 
@@ -66,6 +67,7 @@ function createMap() {
 
   mapStore.setMap(map);
 }
+
 // const dataStore = useDataStore();
 
 // const vectorSourceCountries = new VectorSource({
@@ -90,6 +92,12 @@ function createMap() {
 // });
 
 function onClick() {
+  mapStore.map.on('singleclick', function (e) {
+    if (e.target === document.getElementById('popup')) {
+      console.log('Map clicked');
+    }
+  });
+
   showPopUp.value = !showPopUp.value;
   if (showPopUp.value) {
     let container = document.getElementById('popup') as HTMLElement;
@@ -102,12 +110,24 @@ function onClick() {
       },
     });
     mapStore.map.on('singleclick', function (e) {
+      coordinate.value = e.coordinate;
+
       if (showPopUp.value === false) {
+        document.getElementById('popup-coords')?.remove();
         overlay.setPosition(undefined);
       } else {
-        const coordinate = e.coordinate;
-        overlay.setPosition(coordinate);
+        overlay.setPosition(coordinate.value);
         mapStore.map.addOverlay(overlay);
+        if (!document.getElementById('popup-coords')) {
+          let container = document.createElement('p');
+          container.id = 'popup-coords';
+          container.textContent = `Coordinates: ${coordinate.value}`;
+          let parent = document.getElementById('popup');
+          let firstChild = parent?.firstChild;
+          if (firstChild) {
+            parent?.insertBefore(container, firstChild);
+          }
+        }
       }
     });
   }
@@ -120,7 +140,7 @@ onMounted(() => {
 
 <template>
   <div id="map-container" @click="onClick()"></div>
-  <PopUp v-show="showPopUp === true" />
+  <PopUp v-show="showPopUp === true" :showPopUp="showPopUp" />
 </template>
 
 <style lang="scss">
