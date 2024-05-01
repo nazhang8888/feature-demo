@@ -2,6 +2,8 @@
 import { ref, watch, onMounted } from 'vue';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 
+import { useTableStore } from '@/stores/tableStore';
+
 defineOptions({
   name: 'PopUp',
 });
@@ -10,87 +12,34 @@ const props = defineProps<{
   showPopUp: boolean;
 }>();
 
-const table = ref<Tabulator | null>(null);
-const clickEvent = ref<MouseEvent | null>(null);
-
 watch(
   () => props.showPopUp,
-  async (isShown) => {
-    if (isShown === true && table.value) {
+  (value) => {
+    if (value === true) {
       table.value?.redraw(true);
-      console.log('Table redrawn');
     }
   }
 );
 
-const tableData = [
-  { id: 1, name: 'Oli Bob', age: '12', col: 'red', dob: '' },
-  { id: 2, name: 'Mary May', age: '1', col: 'blue', dob: '14/05/1982' },
-  {
-    id: 3,
-    name: 'Christine Lobowski',
-    age: '42',
-    col: 'green',
-    dob: '22/05/1982',
-  },
-  {
-    id: 4,
-    name: 'Brendon Philips',
-    age: '125',
-    col: 'orange',
-    dob: '01/08/1980',
-  },
-  {
-    id: 5,
-    name: 'Margret Marmajuke',
-    age: '16',
-    col: 'yellow',
-    dob: '31/01/1999',
-  },
-  { id: 6, name: 'Oli Bob', age: '12', col: 'red', dob: '' },
-  { id: 7, name: 'Mary May', age: '1', col: 'blue', dob: '14/05/1982' },
-  {
-    id: 8,
-    name: 'Christine Lobowski',
-    age: '42',
-    col: 'green',
-    dob: '22/05/1982',
-  },
-  {
-    id: 9,
-    name: 'Brendon Philips',
-    age: '125',
-    col: 'orange',
-    dob: '01/08/1980',
-  },
-  {
-    id: 10,
-    name: 'Margret Marmajuke',
-    age: '16',
-    col: 'yellow',
-    dob: '31/01/1999',
-  },
-];
+onMounted(() => {
+  createTable();
+});
 
-const handleClick = (event: MouseEvent) => {
-  clickEvent.value = event;
-  if (props.showPopUp) {
-    console.log('Click event:', clickEvent.value);
-    event.stopImmediatePropagation();
-  }
-};
+const tableStore = useTableStore();
+const table = ref<Tabulator | null>(null);
+const clickEvent = ref<MouseEvent | null>(null);
 
-const createTableDiv = () => {
+const tableData = tableStore.tableData;
+
+function createTable() {
   let container = document.createElement('div');
   container.id = 'popup-table';
   document.getElementById('popup')?.appendChild(container);
-};
-
-const createTable = () => {
-  console.log(document.getElementById('popup-table'));
+  // console.log(document.getElementById('popup-table'));
   table.value = new Tabulator('#popup-table', {
     height: '300px',
     maxHeight: '100%',
+
     responsiveLayout: 'hide',
     reactiveData: true,
     data: tableData,
@@ -108,16 +57,18 @@ const createTable = () => {
     ],
   });
   return table;
-};
+}
 
-onMounted(() => {
-  createTableDiv();
-  createTable();
-});
+const handleClickOnPopUp = (event: MouseEvent) => {
+  clickEvent.value = event;
+  if (props.showPopUp) {
+    event.stopImmediatePropagation();
+  }
+};
 </script>
 
 <template>
-  <div id="popup" class="ol-popup" @click="handleClick"></div>
+  <div id="popup" class="ol-popup" @click="handleClickOnPopUp"></div>
 </template>
 
 <style lang="scss">
@@ -131,7 +82,7 @@ onMounted(() => {
   border: 1px solid #cccccc;
   bottom: 12px;
   left: 5px;
-  width: fit-content;
+  width: 500px;
   height: 400px;
 }
 </style>

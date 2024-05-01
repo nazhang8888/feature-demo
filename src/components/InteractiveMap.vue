@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 import { useMapStore } from '@/stores/mapStore';
 // import { useDataStore } from '@/stores/dataStore';
 import Overlay from 'ol/Overlay';
 
-import { Map, View } from 'ol';
+import { Feature, Map, View } from 'ol';
 import { Tile as TileLayer } from 'ol/layer';
 import { OSM } from 'ol/source';
 // import GeoJSON from 'ol/format/GeoJSON';
-// import VectorLayer from 'ol/layer/Vector';
-// import VectorSource from 'ol/source/Vector';
 // import { VectorImage } from 'ol/layer';
 import { fromLonLat } from 'ol/proj';
-
 import Link from 'ol/interaction/Link';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import { Point } from 'ol/geom';
+import { toStringHDMS } from 'ol/coordinate.js';
+
 import PopUp from '@/components/PopUp.vue';
 
 interface CustomOptions extends TileLayer<OSM> {
@@ -27,22 +29,58 @@ defineOptions({
   name: 'InteractiveMap',
   components: { PopUp },
 });
-
 const showPopUp = ref(false);
 const coordinate = ref([0, 0]);
 
+watch(
+  () => showPopUp.value,
+  (value) => {
+    if (value === false) {
+      try {
+        removeMarker();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+);
+
 const mapStore = useMapStore();
+// const dataStore = useDataStore();
 
 function createMap() {
   let map = new Map({
     target: 'map-container',
-    overlays: [],
+    overlays: [
+      new Overlay({
+        id: '1',
+        element: document.getElementById('popup') as HTMLElement,
+        autoPan: {
+          animation: {
+            duration: 250,
+          },
+        },
+        stopEvent: true,
+      }),
+    ],
     layers: [
       new TileLayer({
         source: new OSM(),
         name: 'OpenStreetMap',
         isBaseMap: true,
       } as CustomOptions),
+      new VectorLayer({
+        source: new VectorSource(),
+        properties: {
+          name: 'Marker',
+        },
+
+        // features: [
+        //   new Feature({
+        //     geometry: new Point(coordinate.value), here, we can grab the layer and add/remove feature
+        //   }),
+        // ],
+      }),
       // new VectorLayer({
       //   source: vectorSourceCountries,
       // }),
@@ -68,8 +106,6 @@ function createMap() {
   mapStore.setMap(map);
 }
 
-// const dataStore = useDataStore();
-
 // const vectorSourceCountries = new VectorSource({
 //   features: new GeoJSON({ featureProjection: "EPSG:3857" }).readFeatures(
 //     dataStore.countries.countries
@@ -91,45 +127,48 @@ function createMap() {
 //   ),
 // });
 
-function onClick() {
-  mapStore.map.on('singleclick', function (e) {
-    if (e.target === document.getElementById('popup')) {
-      console.log('Map clicked');
-    }
+function createMarker(coordinate: number[]) {
+  const marker = new Feature({
+    geometry: new Point(coordinate),
   });
 
-  showPopUp.value = !showPopUp.value;
-  if (showPopUp.value) {
-    let container = document.getElementById('popup') as HTMLElement;
-    let overlay = new Overlay({
-      element: container,
-      autoPan: {
-        animation: {
-          duration: 250,
-        },
-      },
-    });
-    mapStore.map.on('singleclick', function (e) {
-      coordinate.value = e.coordinate;
+  let markerLayer = mapStore.map
+    .getAllLayers()
+    .find((layer) => layer.get('name') === 'Marker');
+  let markerSource = markerLayer?.getSource();
+  (markerSource as VectorSource)?.addFeature(marker);
+}
 
-      if (showPopUp.value === false) {
-        document.getElementById('popup-coords')?.remove();
-        overlay.setPosition(undefined);
-      } else {
-        overlay.setPosition(coordinate.value);
-        mapStore.map.addOverlay(overlay);
-        if (!document.getElementById('popup-coords')) {
-          let container = document.createElement('p');
-          container.id = 'popup-coords';
-          container.textContent = `Coordinates: ${coordinate.value}`;
-          let parent = document.getElementById('popup');
-          let firstChild = parent?.firstChild;
-          if (firstChild) {
-            parent?.insertBefore(container, firstChild);
-          }
-        }
-      }
-    });
+function removeMarker() {
+  let markerLayer = mapStore.map
+    .getAllLayers()
+    .find((layer) => layer.get('name') === 'Marker');
+  let markerSource = markerLayer?.getSource();
+  let markerFeature = (markerSource as VectorSource)?.getFeatures()[0];
+  (markerSource as VectorSource)?.removeFeature(markerFeature as Feature);
+  mapStore.map.getOverlayById('1')?.setPosition(undefined);
+  let parent = document.getElementById('popup');
+  parent?.firstElementChild?.remove();
+}
+
+function onMapClick(event: MouseEvent) {
+  showPopUp.value = !showPopUp.value;
+  if (
+    window.getComputedStyle(document.getElementById('popup') as HTMLElement)
+      .display === 'none'
+  ) {
+    coordinate.value = mapStore.map.getEventCoordinate(event);
+    createMarker(coordinate.value);
+    mapStore.map.getOverlayById('1')?.setPosition(coordinate.value);
+
+    let parent = document.getElementById('popup');
+    if (parent?.firstElementChild) {
+      let container = document.createElement('p');
+      container.id = 'popup-coords';
+      let hdms = toStringHDMS(coordinate.value);
+      container.textContent = `Coordinates: ${hdms}`;
+      parent.firstElementChild?.before(container);
+    }
   }
 }
 
@@ -139,7 +178,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="map-container" @click="onClick()"></div>
+  <div id="map-container" @click.exact="onMapClick"></div>
   <PopUp v-show="showPopUp === true" :showPopUp="showPopUp" />
 </template>
 
@@ -151,5 +190,10 @@ onMounted(() => {
   width: 100vw;
   margin: 0;
   padding: 0;
+}
+.ol-zoom {
+  top: auto;
+  bottom: 1em;
+  left: 0.75em;
 }
 </style>
