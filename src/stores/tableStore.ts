@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import sample_table from '@/assets/data/sample_table.json';
 
 type State = {
   tableData: [];
@@ -6,7 +7,7 @@ type State = {
 
 export const useTableStore = defineStore('tableStore', {
   state: (): State => ({
-    tableData: [],
+    tableData: sample_table as [],
   }),
 
   getters: {

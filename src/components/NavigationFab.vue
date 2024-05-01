@@ -23,6 +23,7 @@ const darkToggle = () => {
     dense
     round
     icon="menu"
+    active-icon="menu"
     aria-label="Menu"
     vertical-actions-align="left"
     direction="down"
@@ -46,6 +47,7 @@ const darkToggle = () => {
       v-model="value"
       name="darktoggle"
       icon="contrast"
+      label="Dark Mode"
     />
   </q-fab>
 </template>

@@ -5,10 +5,11 @@ import { useRoute } from 'vue-router';
 
 import NavigationFab from '@/components/NavigationFab.vue';
 import LayersPicker from '@/components/LayersPicker.vue';
+import PointPicker from '@/components/PointPicker.vue';
 
 defineOptions({
   name: 'MainLayout',
-  components: { NavigationFab, LayersPicker },
+  components: { NavigationFab, LayersPicker, PointPicker },
 });
 
 const route = useRoute();
@@ -19,8 +20,8 @@ const route = useRoute();
     <q-header elevated class="z-top">
       <q-toolbar>
         <NavigationFab />
-
         <q-toolbar-title> Feature Demo </q-toolbar-title>
+        <PointPicker v-if="route.path === '/'" />
         <LayersPicker v-if="route.path === '/'" />
       </q-toolbar>
     </q-header>
@@ -30,3 +31,4 @@ const route = useRoute();
     </q-page-container>
   </q-layout>
 </template>
+ 
