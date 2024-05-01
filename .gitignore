@@ -15,7 +15,7 @@ package-lock.json
 postcss.config.cjs
 postcss.config.js
 
-@/assets/data
+/src/assets/data
 
 tsconfig.json
 tsconfig.vue-tsc.json
