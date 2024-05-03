@@ -4,24 +4,38 @@ import countries from '@/assets/data/countries.json';
 import outline from '@/assets/data/us_outline.json';
 import states from '@/assets/data/us_states.json';
 import counties from '@/assets/data/us_counties.json';
+
+import { Layer } from '@/models';
 // import us_states_style from '@/assets/data/us_states_style.json';
 // import us_counties_style from '@/assets/data/us_counties_style.json';
 // import us_outline_style from '@/assets/data/us_outline_style.json';
 
 type State = {
-  layers: object;
+  layers: Layer[];
 };
 
 export const useDataStore = defineStore('dataStore', {
   state: (): State => ({
-    layers: { countries, outline, states, counties },
+    layers: [
+      { id: 0, name: 'countries', data: countries },
+      { id: 1, name: 'outline', data: outline },
+      { id: 2, name: 'states', data: states },
+      { id: 3, name: 'counties', data: counties },
+    ],
   }),
 
   getters: {
-    getFeatureCollection(): string[] {
+    getFeatureCollectionNames(): string[] {
       const arr = [];
-      for (const name in this.layers) {
-        arr.push(name);
+      for (const obj of this.layers) {
+        arr.push(obj.name);
+      }
+      return arr;
+    },
+    getFeatureCollection(): object[] {
+      const arr = [];
+      for (const obj of this.layers) {
+        arr.push(obj.data);
       }
       return arr;
     },

@@ -25,10 +25,11 @@ const route = useRoute();
         <LayersPicker v-if="route.path === '/'" />
       </q-toolbar>
     </q-header>
-
-    <q-page-container>
-      <router-view />
-    </q-page-container>
+    <KeepAlive :max="10">
+      <q-page-container>
+        <router-view />
+      </q-page-container>
+    </KeepAlive>
   </q-layout>
 </template>
  

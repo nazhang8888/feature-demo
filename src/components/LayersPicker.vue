@@ -1,63 +1,103 @@
 <script setup lang="ts">
 import { useDataStore } from '../stores/dataStore';
 
-//   import { ref, watch } from 'vue';
-//   import { useMapStore } from '../stores/mapStore';
-
-//   import { Vector as VectorSource } from 'ol/source';
-//   import { VectorImage } from 'ol/layer';
-//   import GeoJSON from 'ol/format/GeoJSON';
+import { ref } from 'vue';
+import { useMapStore } from '../stores/mapStore';
+import VectorLayer from 'ol/layer/Vector';
+import { Vector as VectorSource } from 'ol/source';
+import GeoJSON from 'ol/format/GeoJSON';
 
 defineOptions({
   name: 'LayersPicker',
 });
 
+const mapStore = useMapStore();
 const dataStore = useDataStore();
-function renderList() {
-  // let featureCollections = dataStore.getFeatureCollections;
-  // // let parent = document.getElementById('layers-picker');
-  // let sibling =
-  // console.log(sibling);
-  // if (sibling !== null) {
-  //   for (let collection in featureCollections) {
-  //     console.log(collection);
-  //     let button = document.createElement('q-fab-action');
-  //     // parent?.firstChild?.before(button);
-  //     button.innerHTML = collection;
-  //     sibling?.before(button);
-  //   }
-  // }
+const activeIds = ref<string[]>([]);
+
+function onLayerClick(event: Event) {
+  let targetElement = event.target as HTMLElement;
+  targetElement = targetElement.closest('.q-btn') as HTMLElement;
+  let targetId = targetElement.id;
+
+  if (activeIds.value.includes(targetId)) {
+    activeIds.value = activeIds.value.filter((id) => id !== targetId);
+    mapStore.map.getAllLayers().find((layer) => {
+      if (layer.get('name') === targetId) {
+        mapStore.map.removeLayer(layer);
+      }
+    });
+  } else {
+    activeIds.value.push(targetId);
+    dataStore.layers.map((layer) => {
+      if (layer.name === targetId) {
+        let newLayer = new VectorLayer({
+          source: new VectorSource({
+            features: new GeoJSON({
+              featureProjection: 'EPSG:3857',
+            }).readFeatures(layer.data),
+          }),
+          properties: {
+            name: layer.name,
+          },
+        });
+        mapStore.map.addLayer(newLayer);
+      }
+    });
+  }
+}
+
+function addLayerClick(event: Event) {
+  console.log(event + 'Add Layer Clicked');
+  console.log(mapStore.map.getAllLayers());
 }
 </script>
 
 <template>
-  <q-fab
+  <q-btn
     class="bg-primary"
     color="white"
     flat
-    dense
+    fab
     round
     icon="layers"
     active-icon="layers"
-    vertical-actions-align="right"
     direction="down"
-    @click="renderList"
-    persistent
   >
-    <q-fab-action
-      v-for="collection in dataStore.getFeatureCollection"
-      :key="collection"
-      class="bg-primary"
-      :label="collection"
-      icon="radio_button_checked"
+    <q-menu
+      fit
+      dark
+      persistent
+      transition-show="jump-down"
+      transition-hide="jump-up"
+      anchor="bottom end"
+      :offset="[-45, 20]"
+      max-width="200px"
     >
-    </q-fab-action>
-    <q-fab-action
-      class="bg-primary"
-      label="Add a new layer.."
-      icon="add"
-      @click="renderList"
-    >
-    </q-fab-action>
-  </q-fab>
+      <q-list dark class="flex">
+        <q-btn
+          align="left"
+          v-for="collection in dataStore.getFeatureCollectionNames"
+          :key="collection"
+          :id="collection"
+          class="flex col-grow"
+          :label="collection"
+          :icon="
+            activeIds.includes(collection)
+              ? 'radio_button_checked'
+              : 'radio_button_unchecked'
+          "
+          @click="onLayerClick"
+        ></q-btn>
+
+        <q-btn
+          id="add-layer"
+          class="flex col-grow"
+          label="Add a new layer.."
+          icon="add"
+          @click="addLayerClick"
+        ></q-btn>
+      </q-list>
+    </q-menu>
+  </q-btn>
 </template>

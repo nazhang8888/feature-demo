@@ -8,8 +8,19 @@ defineOptions({
 });
 
 const table = ref<Tabulator | null>(null);
+const showPointPicker = ref<boolean>(true);
 const tableStore = useTableStore();
 const tableData = tableStore.tableData;
+
+// watch(
+//   () => showPointPicker.value,
+//   (value) => {
+//     if (value === true) {
+//       console.log(value);
+//       table.value?.redraw();
+//     }
+//   }
+// );
 
 onMounted(() => {
   createTable();
@@ -21,54 +32,74 @@ function createTable() {
   document.getElementById('points-card')?.appendChild(container);
   table.value = new Tabulator('#points-table', {
     height: '100%',
-    maxHeight: '100%',
     responsiveLayout: 'hide',
     autoResize: false,
     reactiveData: true,
     data: tableData,
-    layout: 'fitColumns',
-    renderHorizontal: 'virtual',
+    layout: 'fitDataFill',
+    // renderHorizontal: 'virtual',
+    // rowHeader: undefined,
 
     columns: [
       { title: 'Name', field: 'name' },
-      { title: 'Age', field: 'age', hozAlign: 'left', formatter: 'progress' },
+      // { title: 'Age', field: 'age', hozAlign: 'left', formatter: 'progress' },
       { title: 'Favourite Color', field: 'col' },
-      {
-        title: 'Date Of Birth',
-        field: 'dob',
-        sorter: 'date',
-        hozAlign: 'center',
-      },
+      { title: 'Favourite Color', field: 'col' },
+      { title: 'Favourite Color', field: 'col' },
+
+      // {
+      //   title: 'Date Of Birth',
+      //   field: 'dob',
+      //   sorter: 'date',
+      //   hozAlign: 'center',
+      // },
     ],
   });
-  return table;
+  return table.value;
+}
+
+function pointPickerClick() {
+  showPointPicker.value = !showPointPicker.value;
 }
 </script>
 
 <template>
-  <q-fab
+  <q-btn
+    fab
     class="bg-primary"
     color="white"
     flat
-    dense
     round
     icon="place"
     active-icon="place"
+    @click="pointPickerClick"
   >
-    <!-- <q-fab-action class="bg-primary" label="Add a new point.." icon="add">
-    </q-fab-action> -->
-    <q-card id="points-card" flat bordered dark> </q-card>
-  </q-fab>
+    <q-tooltip>
+      <span>Points</span>
+    </q-tooltip>
+  </q-btn>
+  <q-card
+    id="points-card"
+    v-show="showPointPicker === true"
+    flat
+    bordered
+    dark
+  />
 </template>
 
 <style lang="scss">
 #points-card {
   position: absolute;
   top: 75vh;
-  right: -2vw;
-  margin: 0;
+  right: 1.5vw;
   padding: 0.5em;
   height: 22vh;
-  width: 40vw;
+  width: 50vw;
+}
+
+#points-table {
+  padding: 0em;
+  height: 100%;
+  width: 100%;
 }
 </style>
