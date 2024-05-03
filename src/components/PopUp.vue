@@ -80,8 +80,8 @@ const handleClickOnPopUp = (event: MouseEvent) => {
   padding: 15px;
   border-radius: 10px;
   border: 1px solid #cccccc;
-  bottom: 12px;
-  left: 5px;
+  bottom: 50px;
+  left: 20px;
   width: 500px;
   height: 400px;
 }
