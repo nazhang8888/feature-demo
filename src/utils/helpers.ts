@@ -1,7 +1,7 @@
 import { CellComponent, Tabulator } from 'tabulator-tables';
 
 export function validateTable(table: Tabulator) {
-  table.validate();
+  return table.validate();
 }
 
 export function longRange(

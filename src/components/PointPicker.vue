@@ -31,8 +31,8 @@ const pointSource = ref<VectorSource>();
 onMounted(() => {
   createTable();
 
-  table.value?.on('rowClick', function (e, row) {
-    e.preventDefault();
+  table.value?.on('rowClick', function (event, row) {
+    event.preventDefault();
     try {
       // <-- should be a check to see if row is in store, if not then push that obj to store
       renderPoint(row);
@@ -44,45 +44,10 @@ onMounted(() => {
   table.value?.on('cellEdited', function (cell) {
     let row = cell.getRow();
     row.getCells().forEach((cell) => {
-      if (table.value?.validate()) {
-        // <-- should call validate if cell passes
+      if (validateTable(table.value as Tabulator)) {
         cell.clearValidation();
-      } else {
-        cell.getInitialValue();
       }
     });
-    let invalid = table.value?.getInvalidCells();
-
-    row.getCells().forEach((cell) => {
-      if (cell.getValue() === undefined || '') {
-        validateTable(table.value as Tabulator);
-      }
-    });
-    if (invalid && invalid.length === 0) {
-      row.unfreeze();
-
-      if (cell.getData().id === 0 && table.value?.getRowFromPosition(1)) {
-        table.value?.getRowFromPosition(1)?.update({ id: 1 });
-        for (let i = 1; i < table.value?.getData().length; i++) {
-          let next = table.value?.getRowFromPosition(i + 1);
-          next?.update({ id: i + 1 });
-        }
-      }
-      table.value?.addRow(
-        {
-          id: 0,
-          name: '',
-          country: '',
-          longitude: undefined,
-          latitude: undefined,
-          description: '',
-        },
-        true
-      );
-      if (row.getData().id !== 0) {
-        row.freeze();
-      }
-    }
   });
 });
 
@@ -95,7 +60,7 @@ function createTable() {
   container.id = 'points-table';
   document.getElementById('points-card')?.appendChild(container);
   table.value = new Tabulator('#points-table', {
-    debugEventsExternal: true,
+    // debugEventsExternal: true,
     editTriggerEvent: 'dblclick',
     height: '100%',
     // responsiveLayout: 'collapse',
@@ -107,10 +72,6 @@ function createTable() {
     // persistence: true,
 
     // needs slow zoom onto point on singleclick
-
-    frozenRows(row) {
-      return row.getData().id === 0;
-    },
 
     rowContextMenu: [
       {
@@ -140,7 +101,7 @@ function createTable() {
       {
         title: 'Id',
         field: 'id',
-        visible: false,
+        // visible: false,
         editor: 'input',
         editorEmptyValue: '',
         validator: 'required',
@@ -305,6 +266,44 @@ function renderPoint(row: RowComponent) {
     mapStore.map.getView().setZoom(10);
   }
 }
+
+function handleKeyDown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    console.log('in escape');
+    showPointPicker.value = false;
+  }
+
+  if (event.key === 'Enter') {
+    let data = table.value?.getData();
+    validateTable(table.value as Tabulator);
+    let invalid = table.value?.getInvalidCells();
+
+    if (invalid && invalid.length > 0) {
+      return;
+    }
+
+    data?.forEach((row, i) => {
+      row = table.value?.getRows().slice()[i];
+      row.update({ id: i + 1 });
+    });
+
+    addLeaderRow();
+  }
+}
+
+function addLeaderRow() {
+  table.value?.addRow(
+    {
+      id: 0,
+      name: '',
+      country: '',
+      longitude: undefined,
+      latitude: undefined,
+      description: '',
+    },
+    true
+  );
+}
 </script>
 
 <template>
@@ -328,6 +327,7 @@ function renderPoint(row: RowComponent) {
     flat
     bordered
     dark
+    @keydown="handleKeyDown"
   />
 </template>
 
