@@ -1,28 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-
-import { useMapStore } from '@/stores/mapStore';
-import Overlay from 'ol/Overlay';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 
 import { Feature, Map, View } from 'ol';
+import Overlay from 'ol/Overlay';
 import { Tile as TileLayer } from 'ol/layer';
 import { OSM } from 'ol/source';
-import { fromLonLat } from 'ol/proj';
-import Link from 'ol/interaction/Link';
-import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
+import VectorLayer from 'ol/layer/Vector';
+import { toLonLat } from 'ol/proj.js';
+import Link from 'ol/interaction/Link';
 import { Point } from 'ol/geom';
 import { toStringHDMS } from 'ol/coordinate.js';
-import { toLonLat } from 'ol/proj.js';
 import { Style, Icon } from 'ol/style';
 
+import { useMapStore } from '@/stores/mapStore';
 import PopUp from '@/components/PopUp.vue';
-
-interface CustomOptions extends TileLayer<OSM> {
-  source?: OSM;
-  name?: string;
-  isBaseMap?: boolean;
-}
+import { CustomOptions } from '@/utils/models';
+import { useTableStore } from '@/stores/tableStore';
 
 defineOptions({
   name: 'InteractiveMap',
@@ -30,6 +24,7 @@ defineOptions({
 });
 const showPopUp = ref(false);
 const coordinate = ref([0, 0]);
+const tableStore = useTableStore();
 
 watch(
   () => showPopUp.value,
@@ -44,20 +39,22 @@ watch(
   }
 );
 
+onMounted(() => {
+  createMap();
+});
+
+onUnmounted(() => {
+  // map.dispose()
+});
 const mapStore = useMapStore();
 
 function createMap() {
-  let map = new Map({
+  const map = new Map({
     target: 'map-container',
     overlays: [
       new Overlay({
         id: '0',
         element: document.getElementById('popup') as HTMLElement,
-        autoPan: {
-          animation: {
-            duration: 250,
-          },
-        },
       }),
     ],
     layers: [
@@ -72,9 +69,15 @@ function createMap() {
           name: 'Marker',
         },
       }),
+      new VectorLayer({
+        source: new VectorSource(),
+        properties: {
+          name: 'Point',
+        },
+      }),
     ],
     view: new View({
-      center: fromLonLat([0, 0]),
+      center: [0, 0],
       zoom: 2,
     }),
   });
@@ -92,7 +95,7 @@ function createMarker(coordinate: number[]) {
   let markerLayer = mapStore.map
     .getAllLayers()
     .find((layer) => layer.get('name') === 'Marker');
-  let markerSource = markerLayer?.getSource();
+  let markerSource = markerLayer?.getSource() as VectorSource;
   marker.setStyle(
     new Style({
       image: new Icon({
@@ -101,7 +104,9 @@ function createMarker(coordinate: number[]) {
       }),
     })
   );
-  (markerSource as VectorSource)?.addFeature(marker);
+  markerSource?.addFeature(marker);
+  mapStore.map.getView().fit(markerSource?.getExtent());
+  mapStore.map.getView().setZoom(10);
 }
 
 function removeMarker() {
@@ -128,23 +133,46 @@ function onMapClick(event: MouseEvent) {
 
     let parent = document.getElementById('popup');
     if (parent?.firstElementChild) {
-      let container = document.createElement('p');
+      let container = document.createElement('div');
       container.id = 'popup-coords';
+
+      let hdmsContainer = document.createElement('p');
       let hdms = toStringHDMS(toLonLat(coordinate.value));
-      container.textContent = `Coordinates: ${hdms}`;
+      hdmsContainer.textContent = `HDMS: ${hdms}`;
+
+      let longLatContainer = document.createElement('p');
+      let longLat = toLonLat(coordinate.value);
+      longLat = longLat.map((coord) => parseFloat(coord.toFixed(6)));
+      longLatContainer.textContent = `Coordinates: ${longLat}`;
+
+      let newEntry = {
+        id: tableStore.popupData.length,
+        name: '',
+        country: '',
+        longitude: longLat[0],
+        latitude: longLat[1],
+        description: '',
+      };
+      console.log(newEntry);
+      tableStore.popupData.push(newEntry);
+
+      container.appendChild(hdmsContainer);
+      container.appendChild(longLatContainer);
       parent.firstElementChild?.before(container);
     }
   }
-}
 
-onMounted(() => {
-  createMap();
-});
+  // check for properties of the base map
+}
 </script>
 
 <template>
-  <div id="map-container" @click.exact="onMapClick"></div>
-  <PopUp v-show="showPopUp === true" :showPopUp="showPopUp" />
+  <div id="map-container" @click="onMapClick"></div>
+  <PopUp
+    v-show="showPopUp === true"
+    :showPopUp="showPopUp"
+    :coordinate="coordinate"
+  />
 </template>
 
 <style lang="scss">
@@ -162,3 +190,4 @@ onMounted(() => {
   left: 0.75em;
 }
 </style>
+app/src/utils/models

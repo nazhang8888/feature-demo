@@ -1,29 +1,93 @@
 <script setup lang="ts">
-import { TabulatorFull as Tabulator } from 'tabulator-tables';
+import { ref, onMounted, onUnmounted } from 'vue';
+import {
+  CellComponent,
+  RowComponent,
+  TabulatorFull as Tabulator,
+} from 'tabulator-tables';
+
+import { Feature } from 'ol';
+import { Point } from 'ol/geom';
+import VectorSource from 'ol/source/Vector';
+import { Icon, Style } from 'ol/style';
+import { fromLonLat } from 'ol/proj';
+
 import { useTableStore } from '@/stores/tableStore';
-import { ref, onMounted } from 'vue';
+import { useMapStore } from '@/stores/mapStore';
+
+import { longRange, latRange, validateTable, minChars } from '@/utils/helpers';
 
 defineOptions({
   name: 'PointPicker',
 });
 
 const table = ref<Tabulator | null>(null);
-const showPointPicker = ref<boolean>(true);
+const showPointPicker = ref<boolean>(false);
 const tableStore = useTableStore();
-const tableData = tableStore.tableData;
-
-// watch(
-//   () => showPointPicker.value,
-//   (value) => {
-//     if (value === true) {
-//       console.log(value);
-//       table.value?.redraw();
-//     }
-//   }
-// );
+// const tableData = tableStore.pointPickerData;
+const mapStore = useMapStore();
+const pointSource = ref<VectorSource>();
 
 onMounted(() => {
   createTable();
+
+  table.value?.on('rowClick', function (e, row) {
+    e.preventDefault();
+    try {
+      // <-- should be a check to see if row is in store, if not then push that obj to store
+      renderPoint(row);
+    } catch (error) {
+      console.log(`an error has occurred. ${error as Error}`);
+    }
+  });
+
+  table.value?.on('cellEdited', function (cell) {
+    let row = cell.getRow();
+    row.getCells().forEach((cell) => {
+      if (table.value?.validate()) {
+        // <-- should call validate if cell passes
+        cell.clearValidation();
+      } else {
+        cell.getInitialValue();
+      }
+    });
+    let invalid = table.value?.getInvalidCells();
+
+    row.getCells().forEach((cell) => {
+      if (cell.getValue() === undefined || '') {
+        validateTable(table.value as Tabulator);
+      }
+    });
+    if (invalid && invalid.length === 0) {
+      row.unfreeze();
+
+      if (cell.getData().id === 0 && table.value?.getRowFromPosition(1)) {
+        table.value?.getRowFromPosition(1)?.update({ id: 1 });
+        for (let i = 1; i < table.value?.getData().length; i++) {
+          let next = table.value?.getRowFromPosition(i + 1);
+          next?.update({ id: i + 1 });
+        }
+      }
+      table.value?.addRow(
+        {
+          id: 0,
+          name: '',
+          country: '',
+          longitude: undefined,
+          latitude: undefined,
+          description: '',
+        },
+        true
+      );
+      if (row.getData().id !== 0) {
+        row.freeze();
+      }
+    }
+  });
+});
+
+onUnmounted(() => {
+  table.value?.destroy();
 });
 
 function createTable() {
@@ -31,28 +95,170 @@ function createTable() {
   container.id = 'points-table';
   document.getElementById('points-card')?.appendChild(container);
   table.value = new Tabulator('#points-table', {
+    debugEventsExternal: true,
+    editTriggerEvent: 'dblclick',
     height: '100%',
-    responsiveLayout: 'hide',
-    autoResize: false,
+    // responsiveLayout: 'collapse',
     reactiveData: true,
-    data: tableData,
+    data: tableStore.pointPickerData,
     layout: 'fitDataFill',
+    validationMode: 'blocking',
     // renderHorizontal: 'virtual',
-    // rowHeader: undefined,
+    // persistence: true,
+
+    // needs slow zoom onto point on singleclick
+
+    frozenRows(row) {
+      return row.getData().id === 0;
+    },
+
+    rowContextMenu: [
+      {
+        label: 'Delete Row',
+        action: function (e, row) {
+          row.delete();
+          table.value?.redraw();
+        },
+      },
+    ],
+    rowFormatter: function (row) {
+      let data = row.getData();
+      if (data.id !== 0) {
+        row.getElement().style.backgroundColor = 'revert';
+        row.getElement().style.fontStyle = 'normal';
+        row.getElement().style.fontWeight = 'normal';
+      }
+
+      if (data.id === 0) {
+        row.getElement().style.backgroundColor = 'lightgray';
+        row.getElement().style.fontStyle = 'italic';
+        row.getElement().style.fontWeight = 'lighter';
+      }
+    },
 
     columns: [
-      { title: 'Name', field: 'name' },
-      // { title: 'Age', field: 'age', hozAlign: 'left', formatter: 'progress' },
-      { title: 'Favourite Color', field: 'col' },
-      { title: 'Favourite Color', field: 'col' },
-      { title: 'Favourite Color', field: 'col' },
+      {
+        title: 'Id',
+        field: 'id',
+        visible: false,
+        editor: 'input',
+        editorEmptyValue: '',
+        validator: 'required',
+      },
+      {
+        title: 'Name',
+        field: 'name',
+        width: 100,
+        editor: 'input',
+        editorEmptyValue: '',
+        validator: [
+          { type: minChars, parameters: { min: 5 } },
+          { type: 'string' },
+          { type: 'required' },
+        ],
+        formatter: function placeholder(cell: CellComponent) {
+          let cellValue = cell.getValue();
+          if (
+            cellValue === undefined ||
+            (cellValue === '' && cell.getData().id === 0)
+          ) {
+            cellValue = 'Sydney';
+          }
+          return cellValue;
+        },
+      },
+      {
+        title: 'Country',
+        field: 'country',
+        width: 100,
+        sorter: 'string',
+        editor: 'input',
+        editorEmptyValue: '',
+        formatter: function (cell: CellComponent) {
+          let cellValue = cell.getValue();
 
-      // {
-      //   title: 'Date Of Birth',
-      //   field: 'dob',
-      //   sorter: 'date',
-      //   hozAlign: 'center',
-      // },
+          if (cellValue === undefined || cellValue === '') {
+            cellValue = 'Australia';
+          }
+
+          return cellValue;
+        },
+        validator: [
+          { type: minChars, parameters: { min: 3 } },
+          { type: 'string' },
+          { type: 'required' },
+        ],
+      },
+      {
+        title: 'Longitude',
+        field: 'longitude',
+        width: 150,
+        editor: 'input',
+        editorEmptyValue: undefined,
+        formatter: function placeholder(cell: CellComponent) {
+          let cellValue = cell.getValue();
+          if (cellValue === undefined || cellValue === '') {
+            cellValue = '0.00000';
+          }
+          return cellValue;
+        },
+        validator: [
+          {
+            type: longRange,
+            parameters: { min: -179.9999, max: 179.9999 },
+          },
+          {
+            type: 'required',
+          },
+          {
+            type: 'float',
+          },
+        ],
+      },
+      {
+        title: 'Latitude',
+        field: 'latitude',
+        width: 150,
+        editor: 'input',
+        editorEmptyValue: undefined,
+        formatter: function placeholder(cell: CellComponent) {
+          let cellValue = cell.getValue();
+          if (cellValue === undefined || cellValue === '') {
+            cellValue = '0.00000';
+          }
+          return cellValue;
+        },
+        validator: [
+          {
+            type: latRange,
+            parameters: { min: -89.9999, max: 89.9999 },
+          },
+          {
+            type: 'required',
+          },
+          {
+            type: 'float',
+          },
+        ],
+      },
+      {
+        title: 'Description',
+        field: 'description',
+        editor: 'input',
+        editorEmptyValue: '',
+        formatter: function placeholder(cell: CellComponent) {
+          let cellValue = cell.getValue();
+          if (cellValue === undefined || cellValue === '') {
+            cellValue = 'Add a description';
+          }
+          return cellValue;
+        },
+        validator: [
+          { type: minChars, parameters: { min: 5 } },
+          { type: 'string' },
+          { type: 'required' },
+        ],
+      },
     ],
   });
   return table.value;
@@ -60,6 +266,44 @@ function createTable() {
 
 function pointPickerClick() {
   showPointPicker.value = !showPointPicker.value;
+  // showPointPicker.value ? table.value?.redraw(true) : null;
+  // let objectRows = table.value?.getRows().flatMap((row) => row.getData());
+  // tableStore.pointPickerData.push(...(objectRows ?? []));
+  console.log(table.value?.getRows().flatMap((row) => row.getData()));
+}
+
+function renderPoint(row: RowComponent) {
+  let pointLayer = mapStore.map
+    .getAllLayers()
+    .find((layer) => layer.get('name') === 'Point');
+  pointSource.value = pointLayer?.getSource() as VectorSource;
+  pointSource.value.clear();
+
+  let rowData = row.getData();
+
+  if (rowData.id !== 0 && rowData.latitude && rowData.longitude) {
+    let longitude = rowData.longitude;
+    let latitude = rowData.latitude;
+    let coordinate = [longitude, latitude];
+    coordinate = fromLonLat(coordinate);
+    let point = new Point(coordinate);
+    let feature = new Feature({
+      geometry: point,
+      name: rowData.name,
+    });
+    feature.setStyle(
+      new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: 'src/assets/marker.png',
+        }),
+      })
+    );
+
+    pointSource.value.addFeature(feature);
+    mapStore.map.getView().fit(pointSource.value.getExtent());
+    mapStore.map.getView().setZoom(10);
+  }
 }
 </script>
 

@@ -5,7 +5,7 @@ import outline from '@/assets/data/us_outline.json';
 import states from '@/assets/data/us_states.json';
 import counties from '@/assets/data/us_counties.json';
 
-import { Layer } from '@/models';
+import { Layer } from 'app/src/utils/models';
 // import us_states_style from '@/assets/data/us_states_style.json';
 // import us_counties_style from '@/assets/data/us_counties_style.json';
 // import us_outline_style from '@/assets/data/us_outline_style.json';

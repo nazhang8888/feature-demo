@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useTodoStore } from '@/stores/todoStore';
-import { Todo } from '@/models';
+import { Todo } from '@/utils/models';
 
 defineOptions({
   name: 'TodoCard',
@@ -38,3 +38,4 @@ const todoStore = useTodoStore();
     </q-list>
   </div>
 </template>
+app/src/utils/models

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import { Todo } from '@/models';
+import { Todo } from '@/utils/models';
 
 type State = {
   todos: Todo[];

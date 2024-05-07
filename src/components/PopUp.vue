@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 
 import { useTableStore } from '@/stores/tableStore';
+import { latRange, longRange, validateTable } from '@/utils/helpers';
 
 defineOptions({
   name: 'PopUp',
@@ -10,49 +11,145 @@ defineOptions({
 
 const props = defineProps<{
   showPopUp: boolean;
+  coordinate: number[];
 }>();
 
 watch(
   () => props.showPopUp,
   (value) => {
     if (value === true) {
-      table.value?.redraw(true);
+      table.value?.redraw();
     }
   }
 );
 
 onMounted(() => {
   createTable();
+
+  table.value?.on('cellEdited', function (cell) {
+    let row = cell.getRow();
+    row.getCells().forEach((cell) => {
+      if (table.value?.validate()) {
+        cell.clearValidation();
+      } else {
+        cell.getInitialValue();
+      }
+    });
+    let invalid = table.value?.getInvalidCells();
+
+    row.getCells().forEach((cell) => {
+      if (cell.getValue() === undefined || '') {
+        validateTable(table.value as Tabulator);
+      }
+    });
+    if (invalid && invalid.length === 0) {
+      if (cell.getData().id === 0 && table.value?.getRowFromPosition(1)) {
+        table.value?.getRowFromPosition(1)?.update({ id: 1 });
+        for (let i = 1; i < table.value?.getData().length; i++) {
+          let next = table.value?.getRowFromPosition(i + 1);
+          next?.update({ id: i + 1 });
+        }
+      }
+      table.value?.addRow(
+        {
+          id: 0,
+          name: '',
+          country: '',
+          longitude: undefined,
+          latitude: undefined,
+          description: '',
+        },
+        true
+      );
+    }
+  });
+
+  // tableStore.setPopupData(table.value?.getData() || []);
+  // what is this array showing up in pointpickerdata ?
+
+  console.log(tableStore.popupData);
+});
+
+onUnmounted(() => {
+  table.value?.destroy();
 });
 
 const tableStore = useTableStore();
 const table = ref<Tabulator | null>(null);
 const clickEvent = ref<MouseEvent | null>(null);
 
-const tableData = tableStore.tableData;
+const popupData = tableStore.popupData;
 
 function createTable() {
   let container = document.createElement('div');
   container.id = 'popup-table';
   document.getElementById('popup')?.appendChild(container);
-  // console.log(document.getElementById('popup-table'));
   table.value = new Tabulator('#popup-table', {
     height: '300px',
     maxHeight: '100%',
 
-    responsiveLayout: 'hide',
-    reactiveData: true,
-    data: tableData,
+    // responsiveLayout: 'hide',
+    // reactiveData: true,
+    data: popupData,
     layout: 'fitColumns',
-    columns: [
-      { title: 'Name', field: 'name' },
-      { title: 'Age', field: 'age', hozAlign: 'left', formatter: 'progress' },
-      { title: 'Favourite Color', field: 'col' },
+    rowContextMenu: [
       {
-        title: 'Date Of Birth',
-        field: 'dob',
-        sorter: 'date',
-        hozAlign: 'center',
+        label: 'Delete Row',
+        action: function (e, row) {
+          row.delete();
+        },
+      },
+      {
+        label: 'Add to Saved Points',
+        action: function (e, row) {
+          tableStore.addPointPickerData(row.getData());
+        },
+      },
+    ],
+    columns: [
+      { title: 'Id', field: 'id', visible: false },
+      {
+        title: 'Name',
+        field: 'name',
+        editor: 'input',
+        editorEmptyValue: '',
+        validator: ['required', 'string'],
+      },
+      {
+        title: 'Country',
+        field: 'country',
+        editor: 'input',
+        editorEmptyValue: '',
+      },
+      {
+        title: 'Longitude',
+        field: 'longitude',
+        editor: 'input',
+        editorEmptyValue: undefined,
+        validator: [
+          {
+            type: longRange,
+            parameters: { min: -179.9999, max: 179.9999 },
+          },
+          {
+            type: 'required',
+          },
+        ],
+      },
+      {
+        title: 'Latitude',
+        field: 'latitude',
+        editor: 'input',
+        editorEmptyValue: undefined,
+        validator: [
+          {
+            type: latRange,
+            parameters: { min: -89.9999, max: 89.9999 },
+          },
+          {
+            type: 'required',
+          },
+        ],
       },
     ],
   });
