@@ -19,20 +19,20 @@ export interface Layer {
   data: object;
 }
 
-export interface pointPickerData {
+export interface PointObj {
   id: number;
   name: string;
-  Longitude: number | undefined;
-  Latitude: number | undefined;
+  longitude: number | undefined;
+  latitude: number | undefined;
   description: string;
   country: string;
 }
 
-export interface popupData {
+export interface PopupObj {
   id: number;
   name: string;
-  Longitude: number | undefined;
-  Latitude: number | undefined;
+  longitude: number | undefined;
+  latitude: number | undefined;
   description: string;
   country: string;
 }

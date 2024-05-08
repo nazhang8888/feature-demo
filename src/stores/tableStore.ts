@@ -1,36 +1,26 @@
 import { defineStore } from 'pinia';
 import sample_table from '@/assets/data/sample_table.json';
-import { pointPickerData, popupData } from '@/utils/models';
+import { PointObj, PopupObj } from '@/utils/models';
 
 type State = {
-  popupData: Array<object>;
-  pointPickerData: Array<object>;
+  popupData: PopupObj[];
+  pointPickerData: PointObj[];
 };
 
 export const useTableStore = defineStore('tableStore', {
   state: (): State => ({
-    popupData: [
-      {
-        id: 0,
-        name: '',
-        Longitude: undefined,
-        Latitude: undefined,
-        description: '',
-        country: '',
-      } as popupData,
-      ...sample_table.map((row: object) => row),
-    ],
     pointPickerData: [
       {
         id: 0,
         name: '',
-        Longitude: undefined,
-        Latitude: undefined,
-        description: '',
         country: '',
-      } as pointPickerData,
-      ...sample_table.map((row: object) => row),
+        longitude: undefined,
+        latitude: undefined,
+        description: '',
+      },
+      ...sample_table,
     ],
+    popupData: [],
   }),
 
   getters: {
@@ -39,17 +29,14 @@ export const useTableStore = defineStore('tableStore', {
   },
 
   actions: {
-    setPopupData(tableData: Array<object>) {
-      this.popupData.push(tableData);
+    addPoint(point: PointObj) {
+      this.pointPickerData.splice(1, 0, point);
     },
-    setPointPickerData(pointPickerData: Array<object>) {
-      this.pointPickerData.push(pointPickerData);
+    addPopup(popup: PopupObj) {
+      this.popupData.push(popup);
     },
-    addPointPickerData(data: object) {
-      this.pointPickerData.push(data);
-    },
-    addPopupData(data: object) {
-      this.popupData.push(data);
+    updateState() {
+      this.$patch(() => this.$state.pointPickerData);
     },
   },
 });

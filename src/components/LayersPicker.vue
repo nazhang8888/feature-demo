@@ -64,6 +64,9 @@ function addLayerClick(event: Event) {
     active-icon="layers"
     direction="down"
   >
+    <q-tooltip>
+      <span>Layers</span>
+    </q-tooltip>
     <q-menu
       fit
       dark

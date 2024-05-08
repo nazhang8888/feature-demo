@@ -16,6 +16,7 @@ import { useTableStore } from '@/stores/tableStore';
 import { useMapStore } from '@/stores/mapStore';
 
 import { longRange, latRange, validateTable, minChars } from '@/utils/helpers';
+import { PointObj } from '../utils/models';
 
 defineOptions({
   name: 'PointPicker',
@@ -23,10 +24,9 @@ defineOptions({
 
 const table = ref<Tabulator | null>(null);
 const showPointPicker = ref<boolean>(false);
-const tableStore = useTableStore();
-// const tableData = tableStore.pointPickerData;
-const mapStore = useMapStore();
 const pointSource = ref<VectorSource>();
+const tableStore = useTableStore();
+const mapStore = useMapStore();
 
 onMounted(() => {
   createTable();
@@ -34,7 +34,6 @@ onMounted(() => {
   table.value?.on('rowClick', function (event, row) {
     event.preventDefault();
     try {
-      // <-- should be a check to see if row is in store, if not then push that obj to store
       renderPoint(row);
     } catch (error) {
       console.log(`an error has occurred. ${error as Error}`);
@@ -60,14 +59,14 @@ function createTable() {
   container.id = 'points-table';
   document.getElementById('points-card')?.appendChild(container);
   table.value = new Tabulator('#points-table', {
-    // debugEventsExternal: true,
     editTriggerEvent: 'dblclick',
     height: '100%',
-    // responsiveLayout: 'collapse',
-    reactiveData: true,
+    reactiveData: false,
     data: tableStore.pointPickerData,
-    layout: 'fitDataFill',
+    layout: 'fitDataStretch',
     validationMode: 'blocking',
+    // responsiveLayout: 'collapse',
+    // debugEventsExternal: true,
     // renderHorizontal: 'virtual',
     // persistence: true,
 
@@ -101,7 +100,7 @@ function createTable() {
       {
         title: 'Id',
         field: 'id',
-        // visible: false,
+        visible: false,
         editor: 'input',
         editorEmptyValue: '',
         validator: 'required',
@@ -230,7 +229,8 @@ function pointPickerClick() {
   // showPointPicker.value ? table.value?.redraw(true) : null;
   // let objectRows = table.value?.getRows().flatMap((row) => row.getData());
   // tableStore.pointPickerData.push(...(objectRows ?? []));
-  console.log(table.value?.getRows().flatMap((row) => row.getData()));
+  // console.log(table.value?.getRows().flatMap((row) => row.getData()));
+  // showPointPicker.value ? table.value?.getRowFromPosition(1).freeze() : null;
 }
 
 function renderPoint(row: RowComponent) {
@@ -269,12 +269,36 @@ function renderPoint(row: RowComponent) {
 
 function handleKeyDown(event: KeyboardEvent) {
   if (event.key === 'Escape') {
-    console.log('in escape');
     showPointPicker.value = false;
   }
 
+  if (event.key === 'Tab') {
+    event.preventDefault();
+  }
+
   if (event.key === 'Enter') {
-    let data = table.value?.getData();
+    event.preventDefault();
+
+    let newLeaderRow = {
+      id: 0,
+      name: '',
+      country: '',
+      longitude: undefined,
+      latitude: undefined,
+      description: '',
+    };
+
+    let editedRow = tableStore.pointPickerData[0];
+
+    let newRow = {
+      id: 1,
+      name: editedRow.name,
+      country: editedRow.country,
+      longitude: editedRow.longitude,
+      latitude: editedRow.latitude,
+      description: editedRow.description,
+    };
+
     validateTable(table.value as Tabulator);
     let invalid = table.value?.getInvalidCells();
 
@@ -282,27 +306,19 @@ function handleKeyDown(event: KeyboardEvent) {
       return;
     }
 
-    data?.forEach((row, i) => {
-      row = table.value?.getRows().slice()[i];
-      row.update({ id: i + 1 });
-    });
+    for (let i = 1; i < tableStore.pointPickerData.length; i++) {
+      tableStore.pointPickerData.map(() => {
+        if (tableStore.pointPickerData[i].id !== 0) {
+          tableStore.pointPickerData[i].id = i + 1;
+        }
+      });
+    }
 
-    addLeaderRow();
+    tableStore.addPoint(newRow as PointObj);
+    tableStore.pointPickerData[0] = newLeaderRow;
+    tableStore.updateState();
+    table.value?.setData(tableStore.pointPickerData);
   }
-}
-
-function addLeaderRow() {
-  table.value?.addRow(
-    {
-      id: 0,
-      name: '',
-      country: '',
-      longitude: undefined,
-      latitude: undefined,
-      description: '',
-    },
-    true
-  );
 }
 </script>
 

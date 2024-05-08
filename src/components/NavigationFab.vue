@@ -29,6 +29,11 @@ const darkToggle = () => {
     direction="down"
     persistent
   >
+    <template v-slot:tooltip>
+      <q-tooltip>
+        <span>Menu</span>
+      </q-tooltip>
+    </template>
     <q-fab-action
       v-for="route in routes"
       :key="route.path"

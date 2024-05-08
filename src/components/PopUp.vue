@@ -4,6 +4,7 @@ import { TabulatorFull as Tabulator } from 'tabulator-tables';
 
 import { useTableStore } from '@/stores/tableStore';
 import { latRange, longRange, validateTable } from '@/utils/helpers';
+import { PointObj } from '../utils/models';
 
 defineOptions({
   name: 'PopUp',
@@ -102,7 +103,7 @@ function createTable() {
       {
         label: 'Add to Saved Points',
         action: function (e, row) {
-          tableStore.addPointPickerData(row.getData());
+          tableStore.addPoint(row.getData() as PointObj);
         },
       },
     ],
