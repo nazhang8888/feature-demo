@@ -44,7 +44,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  // map.dispose()
+  mapStore.map.dispose();
 });
 const mapStore = useMapStore();
 
@@ -122,6 +122,7 @@ function removeMarker() {
 }
 
 function onMapClick(event: MouseEvent) {
+  event.preventDefault();
   showPopUp.value = !showPopUp.value;
   if (
     window.getComputedStyle(document.getElementById('popup') as HTMLElement)
@@ -167,7 +168,7 @@ function onMapClick(event: MouseEvent) {
 </script>
 
 <template>
-  <div id="map-container" @click="onMapClick"></div>
+  <div id="map-container" @click.right="onMapClick"></div>
   <PopUp
     v-show="showPopUp === true"
     :showPopUp="showPopUp"

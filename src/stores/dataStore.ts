@@ -41,14 +41,8 @@ export const useDataStore = defineStore('dataStore', {
     },
   },
   actions: {
-    // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // formatStruct(struct: any) {
-    //   const tabulated = [];
-    //   for (let i = 0; i < struct.features.length; i++) {
-    //     tabulated.push(struct.features[i].properties);
-    //   }
-    //   return tabulated;
-    // },
+    addFeatureCollection(layer: Layer) {
+      this.$patch((state) => state.layers.push(layer));
+    },
   },
-  // },
 });

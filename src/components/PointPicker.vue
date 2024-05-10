@@ -71,6 +71,15 @@ function createTable() {
     // persistence: true,
 
     // needs slow zoom onto point on singleclick
+    tabEndNewRow: false,
+
+    // frozenRows(row) {
+    //   let i = this.data?..length;
+    //   if (row.getTable().getData().length > (i ?? 0)) {
+    //     return false;
+    //   }
+    //   return true;
+    // },
 
     rowContextMenu: [
       {
@@ -226,11 +235,6 @@ function createTable() {
 
 function pointPickerClick() {
   showPointPicker.value = !showPointPicker.value;
-  // showPointPicker.value ? table.value?.redraw(true) : null;
-  // let objectRows = table.value?.getRows().flatMap((row) => row.getData());
-  // tableStore.pointPickerData.push(...(objectRows ?? []));
-  // console.log(table.value?.getRows().flatMap((row) => row.getData()));
-  // showPointPicker.value ? table.value?.getRowFromPosition(1).freeze() : null;
 }
 
 function renderPoint(row: RowComponent) {
@@ -344,7 +348,8 @@ function handleKeyDown(event: KeyboardEvent) {
     bordered
     dark
     @keydown="handleKeyDown"
-  />
+  >
+  </q-card>
 </template>
 
 <style lang="scss">
