@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useQuasar } from 'quasar';
 
 defineOptions({
   name: 'NavigationFab',
@@ -9,19 +7,15 @@ defineOptions({
 
 const router = useRouter();
 const routes = router.options.routes.filter((route) => route.name !== 'Error');
-const $q = useQuasar();
-const value = ref(false);
-
-const darkToggle = () => {
-  $q.dark.toggle();
-};
 </script>
 
 <template>
   <q-fab
-    flat
     dense
+    flat
     round
+    unelevated
+    padding="sm"
     icon="menu"
     active-icon="menu"
     aria-label="Menu"
@@ -35,24 +29,24 @@ const darkToggle = () => {
       </q-tooltip>
     </template>
     <q-fab-action
+      id="nav-fab-action"
+      unelevated
+      round
+      outlines
       v-for="route in routes"
       :key="route.path"
       :to="route.path"
-      style="text-decoration: none"
+      style="width: 120px; border: solid 2px lightgray"
+      align="start"
       exact-active-class="exact-active"
       active-class="active"
-      color="primary"
+      :color="$q.dark.isActive ? 'dark' : 'primary'"
+      :text-color="$q.dark.isActive ? 'white' : 'black'"
       :label="String(route.name)"
-      label-position="right"
-      :icon="route.meta ? String(route.meta.icon) : ''"
-    />
-    <q-fab-action
-      @click="darkToggle"
-      color="primary"
-      v-model="value"
-      name="darktoggle"
-      icon="contrast"
-      label="Dark Mode"
-    />
+    >
+      <template v-slot:icon>
+        <q-icon :name="route.meta ? String(route.meta.icon) : ''" />
+      </template>
+    </q-fab-action>
   </q-fab>
 </template>

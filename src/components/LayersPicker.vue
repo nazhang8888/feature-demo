@@ -2,8 +2,8 @@
 import { computed, ref } from 'vue';
 import { event } from 'quasar';
 
-import { useDataStore } from '../stores/dataStore';
-import { useMapStore } from '../stores/mapStore';
+import { useDataStore } from '@/stores/dataStore';
+import { useMapStore } from '@/stores/mapStore';
 
 import VectorLayer from 'ol/layer/Vector';
 import { Vector as VectorSource } from 'ol/source';
@@ -16,7 +16,7 @@ defineOptions({
 const mapStore = useMapStore();
 const dataStore = useDataStore();
 
-const activeIds = ref<string[]>([]);
+const activeIds = ref<number[]>([]);
 
 const dialog = ref<boolean>(false);
 const inputModel = ref<string>('');
@@ -65,41 +65,50 @@ function processInputFill(e: Event) {
   }
 }
 
-function onLayersButtonClick(event: Event) {
+async function onLayersButtonClick(event: Event): Promise<void> {
   let targetElement = event.target as HTMLElement;
   targetElement = targetElement.closest('.q-btn') as HTMLElement;
-  let targetId = targetElement.id;
-
-  if (activeIds.value.includes(targetId)) {
-    activeIds.value = activeIds.value.filter((id) => id !== targetId);
-    mapStore.map.getAllLayers().find((layer) => {
-      if (layer.get('name') === targetId) {
-        mapStore.map.removeLayer(layer);
-      }
-    });
-  } else {
-    activeIds.value.push(targetId);
-    dataStore.layers.map((layer) => {
-      if (layer.name === targetId) {
-        let newLayer = new VectorLayer({
-          source: new VectorSource({
-            features: new GeoJSON({
-              featureProjection: 'EPSG:3857',
-            }).readFeatures(layer.data),
-          }),
-          properties: {
-            name: layer.name,
-          },
-        });
-        mapStore.map.addLayer(newLayer);
-      }
-    });
-  }
+  let targetId = parseInt(targetElement.id);
+  return new Promise((resolve) => {
+    if (activeIds.value.includes(targetId)) {
+      activeIds.value = activeIds.value.filter((id) => id !== targetId);
+      mapStore.map.getAllLayers().find((layer) => {
+        if (layer.get('id') === targetId) {
+          mapStore.map.removeLayer(layer);
+        }
+      });
+      resolve();
+    } else {
+      activeIds.value.push(targetId);
+      dataStore.layers.map((layer) => {
+        if (layer.id === targetId) {
+          let newLayer = new VectorLayer({
+            source: new VectorSource({
+              features: new GeoJSON({
+                featureProjection: 'EPSG:3857',
+              }).readFeatures(layer.data),
+            }),
+            properties: {
+              id: layer.id,
+              name: layer.name,
+            },
+          });
+          mapStore.map.addLayer(newLayer);
+        }
+      });
+      resolve();
+    }
+  });
 }
 
 function addLayerClick(event: Event) {
   event.preventDefault();
   dialog.value = true;
+}
+
+function deleteLayerClick(event: Event, id: number) {
+  event.preventDefault();
+  dataStore.deleteFeatureCollection(id);
 }
 
 function onSubmit(event: Event) {
@@ -118,7 +127,6 @@ function onSubmit(event: Event) {
 
   reader.onload = function (e) {
     let result = e.target?.result;
-    console.log(result);
     if (typeof result === 'string') {
       let data = JSON.parse(result);
       dataStore.addFeatureCollection({
@@ -131,51 +139,53 @@ function onSubmit(event: Event) {
 
   reader.readAsText(fileModel.value);
 
-  // inputModel.value = '';
-  // fileModel.value = null;
+  // return (inputModel.value = ''), (fileModel.value = null);
 }
 </script>
 
 <template>
-  <q-btn
-    class="bg-primary"
-    color="white"
-    flat
-    fab
-    round
-    icon="layers"
-    active-icon="layers"
-  >
+  <q-btn flat round unelevated icon="layers">
     <q-tooltip>
       <span>Layers</span>
     </q-tooltip>
     <q-menu
       id="layers-menu"
       fit
-      dark
       transition-show="jump-down"
       transition-hide="jump-up"
       anchor="bottom end"
       :offset="[-45, 20]"
-      max-width="200px"
+      max-width="250px"
     >
-      <q-list dark class="flex">
+      <q-list class="flex">
         <q-btn
-          align="left"
-          v-for="collection in dataStore.getFeatureCollectionNames"
-          :key="collection"
-          :id="collection"
+          unelevated
+          :class="$q.dark.isActive ? 'bg-dark' : 'bg-primary text-dark'"
+          align="between"
+          v-for="layer in dataStore.getFeatureCollections"
+          :key="layer.id"
+          :id="layer.id"
           class="flex col-grow"
-          :label="collection"
+          :label="layer.name"
           :icon="
-            activeIds.includes(collection)
+            activeIds.includes(layer.id)
               ? 'radio_button_checked'
               : 'radio_button_unchecked'
           "
           @click="onLayersButtonClick"
-        />
+        >
+          <q-btn
+            flat
+            dense
+            round
+            id="delete"
+            icon="remove_circle_outline"
+            @click="deleteLayerClick($event, layer.id)"
+          />
+        </q-btn>
 
         <q-btn
+          unelevated
           id="add-layer"
           class="flex col-grow"
           label="Add a new layer.."
@@ -184,7 +194,7 @@ function onSubmit(event: Event) {
         />
 
         <q-dialog v-model="dialog" backdrop-filter="grayscale(100%)">
-          <q-card dark>
+          <q-card :color="$q.dark.isActive ? 'dark' : 'primary'">
             <q-card-section class="row items-center q-pb-none text-h6">
               Add a New Layer
             </q-card-section>
@@ -194,12 +204,12 @@ function onSubmit(event: Event) {
                   v-model="inputModel"
                   filled
                   clearable
-                  dark
                   color="purple-12"
                   label="Enter a name for your layer"
                   :shadow-text="inputShadowText"
                   @keydown="processInputFill"
                   @focus="processInputFill"
+                  :rules="[(val) => !!val || 'Required']"
                 />
               </q-card-section>
               <q-card-section>
@@ -207,13 +217,13 @@ function onSubmit(event: Event) {
                   id="file-upload"
                   filled
                   counter
-                  dark
                   color="purple-12"
                   accept=".json"
                   label="Upload a GeoJSON file"
                   use-chips
                   v-model="fileModel"
                   style="min-width: 300px"
+                  :rules="[(val) => !!val || 'Required']"
                 >
                   <template v-slot:append>
                     <q-icon name="add" />

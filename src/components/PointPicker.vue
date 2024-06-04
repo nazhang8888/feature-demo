@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import {
   CellComponent,
   RowComponent,
@@ -28,9 +28,19 @@ const pointSource = ref<VectorSource>();
 const tableStore = useTableStore();
 const mapStore = useMapStore();
 
+watch(
+  () => tableStore.$state,
+  (state) => {
+    table.value?.setData(state.pointPickerData);
+    table.value?.redraw();
+  },
+  { deep: true }
+);
+
 onMounted(() => {
   createTable();
 
+  // better zoom
   table.value?.on('rowClick', function (event, row) {
     event.preventDefault();
     try {
@@ -86,7 +96,18 @@ function createTable() {
         label: 'Delete Row',
         action: function (e, row) {
           row.delete();
-          table.value?.redraw();
+          let point: PointObj = {
+            id: row.getData().id,
+            type: 'point',
+            name: row.getData().name,
+            country: row.getData().country,
+            longitude: row.getData().longitude,
+            latitude: row.getData().latitude,
+            description: row.getData().description,
+          };
+          tableStore.deletePoint(point);
+          tableStore.updateState(point);
+          // table.value?.redraw();
         },
       },
     ],
@@ -285,6 +306,7 @@ function handleKeyDown(event: KeyboardEvent) {
 
     let newLeaderRow = {
       id: 0,
+      type: 'point',
       name: '',
       country: '',
       longitude: undefined,
@@ -296,60 +318,55 @@ function handleKeyDown(event: KeyboardEvent) {
 
     let newRow = {
       id: 1,
+      type: 'point',
       name: editedRow.name,
       country: editedRow.country,
       longitude: editedRow.longitude,
       latitude: editedRow.latitude,
       description: editedRow.description,
     };
-
-    validateTable(table.value as Tabulator);
-    let invalid = table.value?.getInvalidCells();
-
-    if (invalid && invalid.length > 0) {
+    if (
+      editedRow.name === '' ||
+      editedRow.country === '' ||
+      editedRow.description === ''
+    ) {
+      validateTable(table.value as Tabulator);
+      table.value?.alert(
+        'Please fill remaining fields in the row to save the point.'
+      );
+      setTimeout(() => {
+        table.value?.clearAlert();
+      }, 1400);
       return;
     }
-
-    for (let i = 1; i < tableStore.pointPickerData.length; i++) {
-      tableStore.pointPickerData.map(() => {
-        if (tableStore.pointPickerData[i].id !== 0) {
-          tableStore.pointPickerData[i].id = i + 1;
-        }
-      });
-    }
-
+    // for (let i = 1; i < tableStore.pointPickerData.length; i++) {
+    //   tableStore.pointPickerData.map(() => {
+    //     if (tableStore.pointPickerData[i].id !== 0) {
+    //       tableStore.pointPickerData[i].id = i + 1;
+    //     }
+    //   });
+    // }
     tableStore.addPoint(newRow as PointObj);
+    tableStore.updateState(newRow as PointObj);
     tableStore.pointPickerData[0] = newLeaderRow;
-    tableStore.updateState();
-    table.value?.setData(tableStore.pointPickerData);
+    // table.value?.redraw();
+    // table.value?.setData(tableStore.pointPickerData);
   }
 }
 </script>
 
 <template>
-  <q-btn
-    fab
-    class="bg-primary"
-    color="white"
-    flat
-    round
-    icon="place"
-    active-icon="place"
-    @click="pointPickerClick"
-  >
-    <q-tooltip>
-      <span>Points</span>
-    </q-tooltip>
+  <q-btn flat round unelevated icon="place" @click="pointPickerClick">
+    <q-card
+      id="points-card"
+      v-show="showPointPicker === true"
+      flat
+      bordered
+      dark
+      @keydown="handleKeyDown"
+    >
+    </q-card>
   </q-btn>
-  <q-card
-    id="points-card"
-    v-show="showPointPicker === true"
-    flat
-    bordered
-    dark
-    @keydown="handleKeyDown"
-  >
-  </q-card>
 </template>
 
 <style lang="scss">

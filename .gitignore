@@ -21,12 +21,17 @@ tsconfig.json
 tsconfig.vue-tsc.json
 jsconfig.json
 
+# Vitest related files
+vitest.config.mts
+
 
 # Quasar core related directories
 .quasar
 /dist
 quasar.config.js
 /quasar.config.*.temporary.compiled*
+quasar.extensions.json
+
 
 # Cordova related directories and files
 /src-cordova/node_modules
@@ -56,3 +61,4 @@ yarn-error.log*
 
 # local .env files
 .env.local*
+.env*

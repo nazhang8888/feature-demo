@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// import { ref } from 'vue';
-// import { useQuasar } from 'quasar';
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
 
 import NavigationFab from '@/components/NavigationFab.vue';
@@ -13,16 +13,48 @@ defineOptions({
 });
 
 const route = useRoute();
+const value = ref(true);
+const $q = useQuasar();
+
+const darkToggle = () => {
+  $q.dark.toggle();
+  console.log($q.dark.isActive);
+};
 </script>
 
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header elevated class="z-top">
+    <q-header
+      class="z-top"
+      :class="$q.dark.isActive ? 'bg-dark' : 'bg-primary text-black'"
+    >
       <q-toolbar>
-        <NavigationFab />
+        <NavigationFab
+          :color="$q.dark.isActive ? 'dark' : 'primary'"
+          :text-color="$q.dark.isActive ? 'white' : 'black'"
+        />
         <q-toolbar-title> Feature Demo </q-toolbar-title>
-        <PointPicker v-if="route.path === '/'" />
-        <LayersPicker v-if="route.path === '/'" />
+        <PointPicker
+          v-if="route.path === '/'"
+          :color="$q.dark.isActive ? 'dark' : 'primary'"
+          :text-color="$q.dark.isActive ? 'white' : 'black'"
+        />
+        <LayersPicker
+          v-if="route.path === '/'"
+          :color="$q.dark.isActive ? 'dark' : 'primary'"
+          :text-color="$q.dark.isActive ? 'white' : 'black'"
+        />
+        <q-btn
+          flat
+          round
+          unelevated
+          @click="darkToggle"
+          v-model="value"
+          name="darktoggle"
+          :icon="$q.dark.isActive ? 'nightlight_round' : 'light_mode'"
+          :color="$q.dark.isActive ? 'dark' : 'primary'"
+          :text-color="$q.dark.isActive ? 'white' : 'black'"
+        />
       </q-toolbar>
     </q-header>
     <KeepAlive :max="10">

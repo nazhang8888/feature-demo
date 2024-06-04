@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import TodoCard from '../components/TodoCard.vue';
-import { useTodoStore } from '../stores/todoStore';
+import { useTodoStore } from '@/stores/todoStore';
 
 defineOptions({
   name: 'TodoPage',
@@ -18,7 +18,7 @@ const onSubmit = () => {
       isFavorite: false,
       id: todoStore.count + 1,
     });
-    newTodo.value = '';
+    // newTodo.value = '';
   }
 };
 </script>
@@ -28,6 +28,7 @@ const onSubmit = () => {
     <div>
       <q-form
         @submit.prevent="onSubmit"
+        @reset="() => (newTodo = '')"
         class="q-gutter-md"
         autocomplete="off"
         ref="addTodo"

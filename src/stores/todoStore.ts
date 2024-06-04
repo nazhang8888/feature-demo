@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 
 import { Todo } from '@/utils/models';
+import { LocalStorage } from 'quasar';
 
 type State = {
   todos: Todo[];
@@ -8,7 +9,7 @@ type State = {
 
 export const useTodoStore = defineStore('todoStore', {
   state: (): State => ({
-    todos: [
+    todos: JSON.parse(LocalStorage.getItem('todoStore') ?? '[]') || [
       { id: 0, title: 'buy some milk', isFavorite: false },
       { id: 1, title: 'play CS2', isFavorite: true },
     ],
@@ -35,14 +36,19 @@ export const useTodoStore = defineStore('todoStore', {
     //   const data = res.json()
     //   this.todos = data
     // },
+    persistToLocalStorage() {
+      LocalStorage.set('todoStore', JSON.stringify(this.todos));
+    },
 
     addTodo(todo: Todo) {
       this.todos.push(todo);
+      this.persistToLocalStorage();
     },
     finishTodo(id: number | undefined) {
       this.todos = this.todos.filter((todo) => {
         return todo.id !== id;
       });
+      this.persistToLocalStorage();
     },
     toggleFavorite(id: number | undefined) {
       // Ex. asynchronous action when implementing backend.
@@ -60,6 +66,7 @@ export const useTodoStore = defineStore('todoStore', {
       }
 
       todo.isFavorite = !todo.isFavorite;
+      this.persistToLocalStorage();
     },
   },
 });

@@ -1,10 +1,18 @@
 import TileLayer from 'ol/layer/Tile';
-import { OSM } from 'ol/source';
+import { StadiaMaps } from 'ol/source';
 
-export interface CustomOptions extends TileLayer<OSM> {
-  source?: OSM;
+export interface CustomOptions extends TileLayer<StadiaMaps> {
+  source?: StadiaMaps;
+  preload?: number;
   name?: string;
   isBaseMap?: boolean;
+}
+
+export interface CustomDarkOptions extends TileLayer<StadiaMaps> {
+  source?: StadiaMaps;
+  preload?: number;
+  name?: string;
+  isDark?: boolean;
 }
 
 export interface Todo {
@@ -21,18 +29,10 @@ export interface Layer {
 
 export interface PointObj {
   id: number;
+  type: string;
   name: string;
+  country: string;
   longitude: number | undefined;
   latitude: number | undefined;
   description: string;
-  country: string;
-}
-
-export interface PopupObj {
-  id: number;
-  name: string;
-  longitude: number | undefined;
-  latitude: number | undefined;
-  description: string;
-  country: string;
 }

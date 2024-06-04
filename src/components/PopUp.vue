@@ -3,7 +3,7 @@ import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 
 import { useTableStore } from '@/stores/tableStore';
-import { latRange, longRange, validateTable } from '@/utils/helpers';
+import { latRange, longRange } from '@/utils/helpers';
 import { PointObj } from '../utils/models';
 
 defineOptions({
@@ -15,10 +15,15 @@ const props = defineProps<{
   coordinate: number[];
 }>();
 
+const emit = defineEmits<{
+  (e: 'update', value: boolean): void;
+}>();
+
 watch(
   () => props.showPopUp,
   (value) => {
     if (value === true) {
+      table.value?.setData(tableStore.popupData);
       table.value?.redraw();
     }
   }
@@ -26,49 +31,6 @@ watch(
 
 onMounted(() => {
   createTable();
-
-  table.value?.on('cellEdited', function (cell) {
-    let row = cell.getRow();
-    row.getCells().forEach((cell) => {
-      if (table.value?.validate()) {
-        cell.clearValidation();
-      } else {
-        cell.getInitialValue();
-      }
-    });
-    let invalid = table.value?.getInvalidCells();
-
-    row.getCells().forEach((cell) => {
-      if (cell.getValue() === undefined || '') {
-        validateTable(table.value as Tabulator);
-      }
-    });
-    if (invalid && invalid.length === 0) {
-      if (cell.getData().id === 0 && table.value?.getRowFromPosition(1)) {
-        table.value?.getRowFromPosition(1)?.update({ id: 1 });
-        for (let i = 1; i < table.value?.getData().length; i++) {
-          let next = table.value?.getRowFromPosition(i + 1);
-          next?.update({ id: i + 1 });
-        }
-      }
-      table.value?.addRow(
-        {
-          id: 0,
-          name: '',
-          country: '',
-          longitude: undefined,
-          latitude: undefined,
-          description: '',
-        },
-        true
-      );
-    }
-  });
-
-  // tableStore.setPopupData(table.value?.getData() || []);
-  // what is this array showing up in pointpickerdata ?
-
-  console.log(tableStore.popupData);
 });
 
 onUnmounted(() => {
@@ -79,54 +41,101 @@ const tableStore = useTableStore();
 const table = ref<Tabulator | null>(null);
 const clickEvent = ref<MouseEvent | null>(null);
 
-const popupData = tableStore.popupData;
-
 function createTable() {
   let container = document.createElement('div');
   container.id = 'popup-table';
   document.getElementById('popup')?.appendChild(container);
   table.value = new Tabulator('#popup-table', {
-    height: '300px',
+    editTriggerEvent: 'click',
+    height: '185px',
     maxHeight: '100%',
+    addRowPos: 'top',
 
     // responsiveLayout: 'hide',
-    // reactiveData: true,
-    data: popupData,
+    reactiveData: false,
+    data: tableStore.popupData,
     layout: 'fitColumns',
-    rowContextMenu: [
+    rowDblClickMenu: [
       {
         label: 'Delete Row',
         action: function (e, row) {
           row.delete();
+
+          let point: PointObj = {
+            id: row.getData().id,
+            type: 'popup',
+            name: row.getData().name,
+            country: row.getData().country,
+            longitude: row.getData().longitude,
+            latitude: row.getData().latitude,
+            description: row.getData().description,
+          };
+          tableStore.deletePoint(point);
+          tableStore.updateState(point);
+          table.value?.redraw();
         },
       },
       {
         label: 'Add to Saved Points',
         action: function (e, row) {
-          tableStore.addPoint(row.getData() as PointObj);
+          if (
+            row.getData().name === '' ||
+            row.getData().country === '' ||
+            row.getData().description === ''
+          ) {
+            table.value?.alert(
+              'Please fill remaining fields in the row to save the point.'
+            );
+            setTimeout(() => {
+              table.value?.clearAlert();
+            }, 1400);
+
+            return;
+          }
+
+          let point = row.getData();
+          let savedPoint = {
+            id: 1,
+            type: 'point',
+            name: point.name,
+            country: point.country,
+            longitude: point.longitude,
+            latitude: point.latitude,
+            description: point.description,
+          };
+          tableStore.addPoint(savedPoint as PointObj);
+          tableStore.updateState(savedPoint as PointObj);
+          table.value?.alert('Point saved.');
+          setTimeout(() => {
+            table.value?.clearAlert();
+          }, 1400);
+
+          // refresh ppd table
         },
       },
     ],
     columns: [
       { title: 'Id', field: 'id', visible: false },
       {
+        title: 'Type',
+        field: 'type',
+        visible: false,
+      },
+      {
         title: 'Name',
         field: 'name',
+        // validator: 'required',
         editor: 'input',
-        editorEmptyValue: '',
-        validator: ['required', 'string'],
       },
       {
         title: 'Country',
         field: 'country',
+        // validator: 'required',
         editor: 'input',
-        editorEmptyValue: '',
       },
       {
         title: 'Longitude',
         field: 'longitude',
-        editor: 'input',
-        editorEmptyValue: undefined,
         validator: [
           {
             type: longRange,
@@ -140,8 +149,7 @@ function createTable() {
       {
         title: 'Latitude',
         field: 'latitude',
-        editor: 'input',
-        editorEmptyValue: undefined,
+
         validator: [
           {
             type: latRange,
@@ -151,6 +159,12 @@ function createTable() {
             type: 'required',
           },
         ],
+      },
+      {
+        title: 'Description',
+        field: 'description',
+        editor: 'input',
+        editorEmptyValue: 'z',
       },
     ],
   });
@@ -163,10 +177,25 @@ const handleClickOnPopUp = (event: MouseEvent) => {
     event.stopImmediatePropagation();
   }
 };
+const handleKey = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    emit('update', false);
+  }
+
+  if (event.key === 'Tab') {
+    event.preventDefault();
+    console.log(table.value?.navigateRight());
+  }
+};
 </script>
 
 <template>
-  <div id="popup" class="ol-popup" @click="handleClickOnPopUp"></div>
+  <div
+    id="popup"
+    class="ol-popup"
+    @click="handleClickOnPopUp"
+    @keydown="handleKey"
+  ></div>
 </template>
 
 <style lang="scss">
@@ -182,5 +211,10 @@ const handleClickOnPopUp = (event: MouseEvent) => {
   left: 20px;
   width: 500px;
   height: 400px;
+  display: flex;
+  flex-flow: column;
+}
+.popup-table {
+  order: 5;
 }
 </style>
