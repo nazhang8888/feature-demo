@@ -37,7 +37,6 @@ export const useTableStore = defineStore('tableStore', {
 
   actions: {
     persistToLocalStorage(point: PointObj) {
-      // LocalStorage.clear();
       const hydrate: object = { savedPoints: [], popupPoints: [] };
       let persistedState: object = { savedPoints: [], popupPoints: [] };
 

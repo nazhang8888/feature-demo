@@ -9,13 +9,17 @@ type State = {
 
 export const useTodoStore = defineStore('todoStore', {
   state: (): State => ({
-    todos: JSON.parse(LocalStorage.getItem('todoStore') ?? '[]') || [
+    todos: [
       { id: 0, title: 'buy some milk', isFavorite: false },
       { id: 1, title: 'play CS2', isFavorite: true },
+      ...JSON.parse(LocalStorage.getItem('todoStore') ?? '[]'),
     ],
   }),
 
   getters: {
+    getTodos(): Todo[] {
+      return this.todos;
+    },
     favorites(): Todo[] {
       return this.todos.filter((todo) => todo.isFavorite);
     },
@@ -37,7 +41,13 @@ export const useTodoStore = defineStore('todoStore', {
     //   this.todos = data
     // },
     persistToLocalStorage() {
-      LocalStorage.set('todoStore', JSON.stringify(this.todos));
+      const data: object[] = [];
+      for (let i = 0; i < this.todos.length; i++) {
+        if (this.$state.todos[i].id >= 2) {
+          data.push(this.$state.todos[i]);
+        }
+      }
+      LocalStorage.set('todoStore', JSON.stringify(data));
     },
 
     addTodo(todo: Todo) {

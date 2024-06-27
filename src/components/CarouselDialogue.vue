@@ -13,8 +13,12 @@ const lorem =
 
 <template>
   <div class="q-pa-md q-gutter-sm">
-    <q-btn label="Carousel" @click="carousel = true" />
-    <q-dialog v-model="carousel">
+    <q-btn
+      label="Carousel"
+      data-testid="carousel-button"
+      @click="carousel = true"
+    />
+    <q-dialog data-testid="dialogue" v-model="carousel">
       <q-carousel
         transition-prev="slide-right"
         transition-next="slide-left"
@@ -28,6 +32,7 @@ const lorem =
         control-text-color="info"
         height="200px"
         class="shadow-1 rounded-borders"
+        data-testid="carousel"
       >
         <q-carousel-slide :name="1" class="column no-wrap flex-center">
           <q-icon name="style" size="56px" />

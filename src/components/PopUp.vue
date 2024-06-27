@@ -192,6 +192,7 @@ const handleKey = (event: KeyboardEvent) => {
 <template>
   <div
     id="popup"
+    data-testid="popup-container"
     class="ol-popup"
     @click="handleClickOnPopUp"
     @keydown="handleKey"

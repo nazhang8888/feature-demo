@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { route } from 'quasar/wrappers';
 import {
   createMemoryHistory,

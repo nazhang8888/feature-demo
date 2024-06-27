@@ -82,26 +82,15 @@ watch(
   () => $q.dark.isActive,
   (value) => {
     if (value === true) {
-      try {
-        mapStore.map.addLayer(darkModeLayer);
-        mapStore.map.removeLayer(lightModeLayer);
-        // replace marker with white marker
-        mapStore.map.render();
-        console.info('load successful');
-      } catch (error) {
-        console.log(error as Error);
-      }
+      mapStore.map.addLayer(darkModeLayer);
+      mapStore.map.removeLayer(lightModeLayer);
+      mapStore.map.render();
     }
 
     if (value === false) {
-      try {
-        mapStore.map.addLayer(lightModeLayer);
-        mapStore.map.removeLayer(darkModeLayer);
-        mapStore.map.render();
-        console.info('load successful');
-      } catch (error) {
-        console.log(error as Error);
-      }
+      mapStore.map.addLayer(lightModeLayer);
+      mapStore.map.removeLayer(darkModeLayer);
+      mapStore.map.render();
     }
   }
 );
@@ -274,7 +263,11 @@ function onMapClick(event: MouseEvent) {
 </script>
 
 <template>
-  <div id="map-container" @click.right="onMapClick"></div>
+  <div
+    id="map-container"
+    data-testid="map-container"
+    @click.right="onMapClick"
+  ></div>
   <PopUp
     v-show="showPopUp === true"
     :showPopUp="showPopUp"

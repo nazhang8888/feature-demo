@@ -57,11 +57,9 @@ const darkToggle = () => {
         />
       </q-toolbar>
     </q-header>
-    <KeepAlive :max="10">
-      <q-page-container>
-        <router-view />
-      </q-page-container>
-    </KeepAlive>
+    <q-page-container>
+      <router-view />
+    </q-page-container>
   </q-layout>
 </template>
  

@@ -54,18 +54,14 @@ export const useDataStore = defineStore('dataStore', {
       //   // );
       //   return;
       // }
-
-      try {
-        const data: object[] = [];
-        for (let i = 0; i < this.layers.length; i++) {
-          if (this.$state.layers[i].id >= 4) {
-            data.push(this.$state.layers[i]);
-          }
+      /* istanbul ignore next */
+      const data: object[] = [];
+      for (let i = 0; i < this.layers.length; i++) {
+        if (this.$state.layers[i].id >= 4) {
+          data.push(this.$state.layers[i]);
         }
-        LocalStorage.set('dataStore', JSON.stringify(data));
-      } catch (error) {
-        console.log(error);
       }
+      LocalStorage.set('dataStore', JSON.stringify(data));
     },
     addFeatureCollection(layer: Layer) {
       this.$patch((state) => {

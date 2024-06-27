@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 
